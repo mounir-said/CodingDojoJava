@@ -5,8 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef2b990b-2e5d-46f4-b2c6-b6d9854614ef" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/src/Main.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/Main.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/PersonalInfo.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/PersonalInfo.java" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/out/production/CodingDojoJava/CafeJava.class" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/src/CafeJava.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -27,7 +28,9 @@
     <option name="stateVersion" value="1" />
   </component>
   <component name="ProjectId" id="2iv8zPuvx4CGjbF7PZ9lKBVrFYp" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
+    <ConfirmationsSetting value="1" id="Add" />
+  </component>
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
