@@ -5,8 +5,6 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="ef2b990b-2e5d-46f4-b2c6-b6d9854614ef" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/out/production/CodingDojoJava/CafeJava.class" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/CafeJava.java" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
