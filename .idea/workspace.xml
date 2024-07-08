@@ -1,34 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
-  <component name="AutoImportSettings">
-    <option name="autoReloadType" value="SELECTIVE" />
-  </component>
   <component name="ChangeListManager">
-    <list default="true" id="ef2b990b-2e5d-46f4-b2c6-b6d9854614ef" name="Changes" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+    <list default="true" id="133c13ef-cfc2-4d80-afbb-8a4a9558b8d3" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/CodingDojoJava.iml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CodingDojoJava/AlfredQuotes.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CodingDojoJava/AlfredTest.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CodingDojoJava/CafeJava.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CodingDojoJava/Main.class" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/out/production/CodingDojoJava/PersonalInfo.class" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
     <option name="LAST_RESOLUTION" value="IGNORE" />
   </component>
-  <component name="FileTemplateManagerImpl">
-    <option name="RECENT_TEMPLATES">
-      <list>
-        <option value="Class" />
-      </list>
-    </option>
-  </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="MarkdownSettingsMigration">
-    <option name="stateVersion" value="1" />
-  </component>
-  <component name="ProjectId" id="2iv8zPuvx4CGjbF7PZ9lKBVrFYp" />
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectId" id="2iyxoogNxEw1MkwRHb8TbHK1jOv" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -42,11 +35,11 @@
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="ef2b990b-2e5d-46f4-b2c6-b6d9854614ef" name="Changes" comment="" />
-      <created>1720359954383</created>
+      <changelist id="133c13ef-cfc2-4d80-afbb-8a4a9558b8d3" name="Changes" comment="" />
+      <created>1720476798176</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1720359954383</updated>
+      <updated>1720476798176</updated>
     </task>
     <servers />
   </component>
