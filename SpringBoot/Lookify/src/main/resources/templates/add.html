@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="/styles/styles.css">
+    <script src="/scripts/agregar.js" defer></script>
+    <title>Agregar Canción</title>
+</head>
+<body>
+<div class="container-dashboard add-container">
+    <div class="header">
+        <h1>Agregar canciones</h1>
+        <a class="link-dashboard" href="/dashboard">Dashboard</a>
+    </div>
+    <div class="cont-form-agregar">
+        <form class="form-agregar-cancion">
+            <label>Nombre:
+                <span class="error error1">El nombre debe ser mayor a 5 carateres</span>
+                <input type="text" name="nombre" id="name_cancion" placeholder="Nombre de cancion..">
+            </label>
+            <label>Artista:
+                <span class="error error2">El artista debe ser mayor a 5 carateres</span>
+                <input type="text" name="artista" id="artista_cancion" placeholder="Artista de cancion..">
+            </label>
+            <label>Clasificación:
+                <span class="error error3">La clasificacion debe estar entre 1 y 10</span>
+                <input type="number" name="clasificacion" id="clasificacion_cancion" placeholder="10">
+            </label>
+            <input type="submit" value="Guardar">
+
+        </form>
+    </div>
+
+
+</div>
+</body>
+</html>

@@ -1,0 +1,163 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* Estilos de index --------------------------------*/
+.container{
+    height: 100vh;
+    width: 100vw;
+    background-color: indianred;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.titulo{
+    flex: 1;
+    font-size: 80px;
+    color: white;
+}
+.link{
+    flex: 1;
+    font-size: 30px;
+    font-weight: bold;
+}
+/* Estilos de dashboard --------------------------------*/
+.container-dashboard{
+    min-height: 100vh;
+    background-color: indianred;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+.header{
+    width: 100%;
+    height: 100px;
+    background-color: gold;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 25px;
+}
+.link-dashboard{
+    font-size: 20px;
+    margin-right: 25px;
+}
+.form-buscar input{
+    height: 30px;
+}
+#input_buscar{
+    padding: 0 10px;
+    cursor: pointer;
+}
+.sub-titulo{
+    margin-top: 100px;
+    color: white;
+}
+.tabla{
+    width: 800px;
+    background-color: darkgray;
+    border: 1px solid black;
+    border-right: none;
+}
+.fila{
+    display: flex;
+}
+.columna{
+    flex: 1;
+    padding: 10px 5px;
+    border-right: 1px solid black;
+}
+.gray{
+    background-color: gainsboro;
+
+}
+.white{
+    background-color: white;
+
+}
+.btn-delete{
+    background-color: red;
+    padding: 5px 10px;
+    color: white;
+    font-weight: bold;
+    border: none;
+    cursor: pointer;
+    border-radius: 5px;
+}
+/*Estilos search---------------------------*/
+.cont-derecha{
+    display: flex;
+}
+.ir-dashboard{
+    font-size: 20px;
+    margin-left: 10px;
+}
+.no-esta{
+    background-color: red;
+    color: white;
+    padding: 25px;
+    border-right: 1px solid black;
+}
+/* Estilos top ten----------------------------*/
+.tabla-top{
+    width: 600px;
+    font-size: 30px;
+    background-color: white;
+}
+/*Estilos agregar cancion--------------------*/
+.cont-form-agregar{
+    width: 250px;
+    height: 350px;
+    background-color: gold;
+    border-radius: 16px;
+    margin-top: 100px;
+}
+.form-agregar-cancion{
+    height: 100%;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 10px;
+}
+.form-agregar-cancion input{
+    height: 30px;
+    margin-bottom: 15px;
+}
+.form-agregar-cancion label{
+    display: flex;
+    flex-direction: column;
+}
+.error{
+    display: none;
+    font-size: 13px;
+    color: white;
+    background-color: red;
+}
+/*Detalle estilos -------------------------*/
+.cont-detalle{
+    width: 500px;
+    height: 350px;
+    background-color: gold;
+    border-radius: 16px;
+    margin-top: 25px;
+
+    font-size: 35px;
+    padding: 25px;
+
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.cont-detalle span{
+    color: white;
+    background-color: black;
+}
+.cont-detalle button{
+    width: 110px;
+    height: 50px;
+    font-size: 20px;
+
+}
