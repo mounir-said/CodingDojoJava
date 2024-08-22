@@ -1,71 +1,78 @@
 public class Queue {
-  private Node front;
-  private Node rear;
-  private int size;
+    private Object[] queue;
+    private int head;
+    private int tail;
+    private int size;
+    private int capacity;
 
-  private class Node {
-      Object data;
-      Node next;
+    // Constructor to initialize the queue with a default capacity
+    public Queue(int capacity) {
+        this.capacity = capacity;
+        queue = new Object[capacity];
+        head = 0;
+        tail = -1;
+        size = 0;
+    }
 
-      Node(Object data) {
-          this.data = data;
-          this.next = null;
-      }
-  }
+    // Enqueue an element to the end of the queue
+    public boolean enqueue(Object value) {
+        if (size == capacity) {
+            return false; // Queue is full
+        }
+        tail = (tail + 1) % capacity;
+        queue[tail] = value;
+        size++;
+        return true;
+    }
 
-  public Queue() {
-      this.front = null;
-      this.rear = null;
-      this.size = 0;
-  }
+    // Dequeue an element from the front of the queue
+    public Object dequeue() {
+        if (isEmpty()) {
+            return null; // Queue is empty
+        }
+        Object value = queue[head];
+        head = (head + 1) % capacity;
+        size--;
+        return value;
+    }
 
-  public void enqueue(Object data) {
-      Node newNode = new Node(data);
-      if (rear == null) {
-          front = rear = newNode;
-      } else {
-          rear.next = newNode;
-          rear = newNode;
-      }
-      size++;
-  }
+    // Peek at the front element of the queue without removing it
+    public Object peek() {
+        if (isEmpty()) {
+            return null; // Queue is empty
+        }
+        return queue[head];
+    }
 
-  public Object dequeue() {
-      if (front == null) {
-          throw new IllegalStateException("Queue is empty");
-      }
-      Object data = front.data;
-      front = front.next;
-      if (front == null) {
-          rear = null;
-      }
-      size--;
-      return data;
-  }
+    // Check if the queue is empty
+    public boolean isEmpty() {
+        return size == 0;
+    }
 
-  public Object peek() {
-      if (front == null) {
-          throw new IllegalStateException("Queue is empty");
-      }
-      return front.data;
-  }
+    // Get the current size of the queue
+    public int size() {
+        return size;
+    }
 
-  public boolean isEmpty() {
-      return size == 0;
-  }
+    // Example usage
+    public static void main(String[] args) {
+        Queue queue = new Queue(10); // Create a queue with a capacity of 10
 
-  public int size() {
-      return size;
-  }
+        // Test enqueuing elements
+        System.out.println("Enqueue 'Hello': " + queue.enqueue("Hello")); // Output: true
+        System.out.println("Enqueue 123: " + queue.enqueue(123)); // Output: true
+        System.out.println("Enqueue 45.67: " + queue.enqueue(45.67)); // Output: true
 
-  public static void main(String[] args) {
-      Queue queue = new Queue();
-      queue.enqueue(1);
-      queue.enqueue(2);
-      queue.enqueue(3);
-      System.out.println(queue.dequeue()); // Output: 1
-      System.out.println(queue.peek()); // Output: 2
-      System.out.println(queue.isEmpty()); // Output: false
-      System.out.println(queue.size()); // Output: 2
-  }
+        // Test peeking and dequeuing elements
+        System.out.println("Front element is: " + queue.peek()); // Output: Hello
+        System.out.println("Queue size is: " + queue.size()); // Output: 3
+
+        System.out.println("Dequeued element is: " + queue.dequeue()); // Output: Hello
+        System.out.println("Queue size after dequeue: " + queue.size()); // Output: 2
+
+        // Test dequeuing from an empty queue
+        queue.dequeue(); // Dequeue remaining elements
+        queue.dequeue(); // Dequeue from empty queue
+        System.out.println("Dequeued from empty queue: " + queue.dequeue()); // Output: null
+    }
 }

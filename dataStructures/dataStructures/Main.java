@@ -1,4 +1,4 @@
- class Stack {
+public class Stack {
     private Object[] stack;
     private int top;
     private int size;
@@ -50,7 +50,7 @@
 }
 
 // Example usage
- class Main {
+public class Main {
     public static void main(String[] args) {
         Stack stack = new Stack(10); // Create a stack with a capacity of 10
 
