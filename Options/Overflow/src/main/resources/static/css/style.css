@@ -1,0 +1,26 @@
+body {
+	max-width: 1080px;
+	margin: auto;
+}
+table {
+	width: 100%
+}
+tr {
+	background-color: #d9faff;
+}
+th, td {
+	text-align: center;
+	padding: 8px;
+}
+.questionLink {
+	text-align: right;
+}
+.answerContainer {
+	display: flex;
+}
+.flex {
+	flex: 1;
+}
+.error {
+	color: red;
+}
