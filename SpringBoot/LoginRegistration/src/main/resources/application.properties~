@@ -1,10 +1,9 @@
-spring.application.name=studentroster
-spring.mvc.view.prefix=/WEB-INF/views/
-
+spring.application.name=LoginRegistration
+spring.mvc.view.prefix=/WEB-INF/
 # MySQL database connection settings
-spring.datasource.url=jdbc:mysql://localhost:3306/studentroster?createDatabaseIfNotExist=true
+spring.datasource.url=jdbc:mysql://localhost:3306/auth
 spring.datasource.username=root
-spring.datasource.password=
+spring.datasource.password=root
 
 # Specify the MySQL driver class
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
