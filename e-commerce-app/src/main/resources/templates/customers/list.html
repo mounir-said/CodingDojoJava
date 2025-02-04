@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Customer List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <h1>Customer List</h1>
+        <a th:href="@{/layout}" class="btn btn-primary mb-3">Go to Layout Page</a>
+        <!-- Button to add a new customer -->
+        <a th:href="@{/customers/add}" class="btn btn-success mb-3">Add New Customer</a>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Name</th>
+                <th>Email</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Check if the customers list is empty -->
+            <tr th:if="${customers.empty}">
+                <td colspan="4" class="text-center">No customers found.</td>
+            </tr>
+            <!-- Iterate over the customers list -->
+            <tr th:each="customer : ${customers}" th:unless="${customers.empty}">
+                <td th:text="${customer.id}"></td>
+                <td th:text="${customer.name}"></td>
+                <td th:text="${customer.email}"></td>
+                <td>
+                    <!-- Edit Button -->
+                    <a th:href="@{/customers/edit/{id}(id=${customer.id})}" class="btn btn-warning btn-sm">Edit</a>
+                    <!-- Delete Button -->
+                    <a th:href="@{/customers/delete/{id}(id=${customer.id})}" class="btn btn-danger btn-sm">Delete</a>
+                    <!-- View Button -->
+                    <a th:href="@{/customers/view/{id}(id=${customer.id})}" class="btn btn-info btn-sm">View</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>View Customer</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <h1>Customer Details</h1>
+    <div class="card">
+        <div class="card-body">
+            <h5 class="card-title" th:text="${customer.name}"></h5>
+            <p class="card-text">
+                <strong>ID:</strong> <span th:text="${customer.id}"></span><br>
+                <strong>Email:</strong> <span th:text="${customer.email}"></span><br>
+                <strong>Password:</strong> <span th:text="${customer.password}"></span>
+            </p>
+            <a th:href="@{/customers}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+</div>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

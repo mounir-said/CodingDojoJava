@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your project description here">
+    <meta name="author" content="Your Name">
+    <title>Products</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link th:href="@{/styles.css}" rel="stylesheet">
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1 class="text-center mb-4">Products</h1>
+    <a th:href="@{/layout}" class="btn btn-primary mb-3">Go to Layout Page</a>
+    <a th:href="@{/products/create}" class="btn btn-success mb-3">Create Product</a>
+    <table class="table table-striped table-hover">
+        <thead class="thead-dark">
+        <tr>
+            <th scope="col">Id</th>
+            <th scope="col">Name</th>
+            <th scope="col">Brand</th>
+            <th scope="col">Category</th>
+            <th scope="col">Price</th>
+            <th scope="col">Image</th>
+            <th scope="col">Date of Creation</th>
+            <th scope="col">Actions</th>
+        </tr>
+        </thead>
+        <tbody>
+        <tr th:each="product : ${products}">
+            <td th:text="${product.id}"></td>
+            <td th:text="${product.name}"></td>
+            <td th:text="${product.brand}"></td>
+            <td th:text="${product.category}"></td>
+            <td th:text="${product.price} + ' $'"></td>
+            <td>
+                <img th:src="@{'/images/' + ${product.image_filename}}"
+                     alt="Product Image" width="100" class="img-thumbnail">
+            </td>
+            <td th:text="${#dates.format(product.created_at, 'yyyy-MM-dd HH:mm')}"></td>
+            <td>
+                <!-- View Button -->
+                <a th:href="@{/products/view(id=${product.id})}" class="btn btn-info btn-sm">View</a>
+                <!-- Edit Button -->
+                <a th:href="@{/products/edit(id=${product.id})}" class="btn btn-primary btn-sm">Edit</a>
+                <!-- Delete Button -->
+                <a th:href="@{/products/delete(id=${product.id})}"
+                   onclick="return confirm('Are you sure you want to delete this product?')"
+                   class="btn btn-danger btn-sm ml-2">Delete</a>
+            </td>
+        </tr>
+        </tbody>
+    </table>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

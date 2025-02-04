@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+      layout:decorate="~{layout}">
+<head>
+    <title>Order List</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link th:href="@{/css/styles.css}" rel="stylesheet">
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+<div layout:fragment="content">
+    <div class="container mt-4">
+        <h1>Order List</h1>
+        <!-- Button to add a new order -->
+        <a th:href="@{/layout}" class="btn btn-primary mb-3">Go to Layout Page</a>
+        <a th:href="@{/orders/add}" class="btn btn-success mb-3">Add New Order</a>
+        <table class="table table-striped">
+            <thead>
+            <tr>
+                <th>ID</th>
+                <th>Order Date</th>
+                <th>Total Amount</th>
+                <th>Customer</th>
+                <th>Actions</th>
+            </tr>
+            </thead>
+            <tbody>
+            <!-- Check if the orders list is empty -->
+            <tr th:if="${orders.empty}">
+                <td colspan="5" class="text-center">No orders found.</td>
+            </tr>
+            <!-- Iterate over the orders list -->
+            <tr th:each="order : ${orders}" th:unless="${orders.empty}">
+                <td th:text="${order.id}"></td>
+                <td>
+                    <a th:href="@{/orders/view/{id}(id=${order.id})}" th:text="${order.orderDate}"></a>
+                </td>
+                <td th:text="${order.totalAmount}"></td>
+                <td th:text="${order.customer.name}"></td>
+                <td>
+                    <!-- Edit Button -->
+                    <a th:href="@{/orders/edit/{id}(id=${order.id})}" class="btn btn-warning btn-sm">Edit</a>
+                    <!-- Delete Button -->
+                    <a th:href="@{/orders/delete/{id}(id=${order.id})}" class="btn btn-danger btn-sm">Delete</a>
+                    <!-- Pay Button -->
+                    <a th:href="@{/orders/{id}/pay(id=${order.id})}" class="btn btn-success btn-sm">Pay</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+<!-- Bootstrap JS and dependencies -->
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.min.js"></script>
+</body>
+</html>

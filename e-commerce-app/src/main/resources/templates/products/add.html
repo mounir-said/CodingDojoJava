@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Your project description here">
+    <meta name="author" content="Your Name">
+    <title>Create Product</title>
+
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom CSS -->
+    <link href="styles.css" rel="stylesheet">
+    <style>
+        /* Set background image for the body */
+        body {
+            background-image: url('/images/background.jpg');
+            background-size: cover;
+            background-position: center;
+            background-attachment: fixed;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <h1 class="text-center mb-4">Create Product</h1>
+            <form method="post" enctype="multipart/form-data" th:object="${productDto}">
+                <div class="form-group">
+                    <label for="name">Name</label>
+                    <input type="text" class="form-control" id="name" th:field="${productDto.name}" >
+                    <div class="text-danger" th:if="${#fields.hasErrors('name')}">
+                        <p th:errors="${productDto.name}"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="brand">Brand</label>
+                    <input type="text" class="form-control" id="brand" th:field="${productDto.brand}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('brand')}">
+                        <p th:errors="${productDto.brand}"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="category">Category</label>
+                    <select class="form-control" id="category" th:field="${productDto.category}">
+                        <option value="" disabled>Select a category</option>
+                        <option value="Others">Others</option>
+                        <option value="Phone">Phone</option>
+                        <option value="Computer">Computer</option>
+                        <option value="Accessories">Accessories</option>
+                        <option value="Printers">Printers</option>
+                        <option value="Cameras">Cameras</option>
+                    </select>
+                    <div class="text-danger" th:if="${#fields.hasErrors('category')}">
+                        <p th:errors="${productDto.category}"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="price">Price</label>
+                    <input type="number" class="form-control" id="price" th:field="${productDto.price}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('price')}">
+                        <p th:errors="${productDto.price}"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea class="form-control" id="description" th:field="${productDto.description}"></textarea>
+                    <div class="text-danger" th:if="${#fields.hasErrors('description')}">
+                        <p th:errors="${productDto.description}"></p>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label for="imageFile">Upload Image</label>
+                    <input type="file" class="form-control" id="imageFile" th:field="${productDto.imageFile}">
+                    <div class="text-danger" th:if="${#fields.hasErrors('imageFile')}">
+                        <p th:errors="${productDto.imageFile}"></p>
+                    </div>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+                <a type="reset" class="btn btn-outline-primary" href="/products" role="button">Cancel</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+<!-- Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.4.4/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>
