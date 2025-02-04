@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Ajouter un Rendez-vous</title>
+    <link rel="stylesheet" th:href="@{/css/styles.css}">
+</head>
+<body>
+<h1>Ajouter un Rendez-vous</h1>
+
+<form action="/appointments/save" method="post" th:object="${appointment}">
+    <!-- Champ Date -->
+    <label for="date">Date :</label>
+    <input type="date" id="date" th:field="*{date}" required>
+    <br>
+
+    <!-- Champ Heure -->
+    <label for="time">Heure :</label>
+    <input type="time" id="time" th:field="*{time}" required>
+    <br>
+
+    <!-- Champ Nom du Médecin -->
+    <label for="doctorName">Nom du Médecin :</label>
+    <input type="text" id="doctorName" th:field="*{doctorName}" required>
+    <br>
+
+    <!-- Champ Nom du Patient -->
+    <label for="patientName">Nom du Patient :</label>
+    <input type="text" id="patientName" th:field="*{patientName}" required>
+    <br>
+
+    <!-- Champ ID du Médecin (Optionnel - Peut être caché ou auto-généré) -->
+    <label for="doctorId">ID du Médecin :</label>
+    <input type="number" id="doctorId" th:field="*{doctorId}" required>
+    <br>
+
+    <!-- Champ ID du Patient (Optionnel - Peut être caché ou auto-généré) -->
+    <label for="patientId">ID du Patient :</label>
+    <input type="number" id="patientId" th:field="*{patientId}" required>
+    <br>
+
+    <!-- Bouton de soumission -->
+    <button type="submit">Enregistrer</button>
+</form>
+</body>
+</html>
