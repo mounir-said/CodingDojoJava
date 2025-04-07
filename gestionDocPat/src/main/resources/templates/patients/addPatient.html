@@ -1,96 +1,31 @@
 <!DOCTYPE html>
 <html xmlns:th="http://www.thymeleaf.org">
 <head>
-    <title>Accueil</title>
+    <title>Ajouter un Patient</title>
     <link rel="stylesheet" th:href="@{/css/styles.css}">
 </head>
 <body>
-<div class="container">
-    <h1>Gestion des Docteurs et des Patients</h1>
+<h1>Ajouter un Patient</h1>
 
-    <!-- Liens -->
-    <div class="actions">
-        <a href="/doctors/add" class="btn">Ajouter un Docteur</a>
-        <a href="/patients/add" class="btn">Ajouter un Patient</a>
-        <a href="/appointments/add" class="btn">Ajouter un Rendez-vous</a>
-    </div>
+<!-- Formulaire lié à l'entité Patient -->
+<form action="/patients/save" method="post" th:object="${patient}">
+    <!-- Champ Nom -->
+    <label for="name">Nom :</label>
+    <input type="text" id="name" th:field="*{name}" required>
+    <br>
 
-    <!-- Tableau des Docteurs -->
-    <h2>Docteurs</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Spécialité</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="doctor : ${doctors}">
-            <td th:text="${doctor.id}"></td>
-            <td th:text="${doctor.name}"></td>
-            <td th:text="${doctor.specialty}"></td>
-            <td th:text="${doctor.email}"></td>
-            <td>
-                <a th:href="@{/doctors/delete/{id}(id=${doctor.id})}" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce docteur ?')">Supprimer</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Champ Maladie -->
+    <label for="disease">Maladie :</label>
+    <input type="text" id="disease" th:field="*{disease}" required>
+    <br>
 
-    <!-- Tableau des Patients -->
-    <h2>Patients</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Nom</th>
-            <th>Maladie</th>
-            <th>Email</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="patient : ${patients}">
-            <td th:text="${patient.id}"></td>
-            <td th:text="${patient.name}"></td>
-            <td th:text="${patient.disease}"></td>
-            <td th:text="${patient.email}"></td>
-            <td>
-                <a th:href="@{/patients/delete/{id}(id=${patient.id})}" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce patient ?')">Supprimer</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
+    <!-- Champ Email (si présent dans l'entité) -->
+    <label for="email">Email :</label>
+    <input type="email" id="email" th:field="*{email}" required>
+    <br>
 
-    <!-- Tableau des Rendez-vous -->
-    <h2>Rendez-vous</h2>
-    <table>
-        <thead>
-        <tr>
-            <th>ID</th>
-            <th>Date</th>
-            <th>Heure</th>
-            <th>Nom du Docteur</th>
-            <th>Nom du Patient</th>
-            <th>Actions</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr th:each="appointment : ${appointments}">
-            <td th:text="${appointment.id}"></td>
-            <td th:text="${appointment.date}"></td>
-            <td th:text="${appointment.time}"></td>
-            <td th:text="${appointment.doctorName}"></td>
-            <td th:text="${appointment.patientName}"></td>
-            <td>
-                <a th:href="@{/appointments/delete/{id}(id=${appointment.id})}" class="btn-delete" onclick="return confirm('Êtes-vous sûr de vouloir supprimer ce rendez-vous ?')">Supprimer</a>
-            </td>
-        </tr>
-        </tbody>
-    </table>
-</div>
+    <!-- Bouton de soumission -->
+    <button type="submit">Enregistrer</button>
+</form>
 </body>
 </html>
