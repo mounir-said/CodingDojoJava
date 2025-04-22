@@ -56,7 +56,7 @@
 <body>
 <div class="search-container">
     <!-- Header -->
-    <h1 class="mb-4">MCP Search Application</h1>
+    <h1 class="mb-4">Search</h1>
 
     <!-- Search Form -->
     <form th:action="@{/search}" th:object="${searchRequest}" method="post">
@@ -85,7 +85,7 @@
             <div class="card-body">
                 <!-- Title -->
                 <h5 class="card-title">
-                    <a th:href="${result.url}" target="_blank" th:text="${result.title}"></a>
+                    <a th:href="${result.url}" target="_blank" th:utext="${result.title}"></a>
                 </h5>
                 <!-- Description -->
                 <p class="card-text" th:utext="${result.description}"></p>
@@ -103,7 +103,19 @@
     <div th:if="${results != null && results.isEmpty()}" class="alert alert-info">
         No results found for your query.
     </div>
-    
+    <!-- This stays the same -->
+    <form th:action="@{/search}" th:object="${searchRequest}" method="post">
+        <input type="text" th:field="*{query}">
+
+        <!-- Results display -->
+        <div th:each="result : ${results}" class="card mb-3">
+            <img th:src="${result.image}">
+            <h5 th:utext="${result.title}"></h5>
+            <p th:utext="${result.description}"></p>
+            <p class="price" th:utext="${result.price}"></p>
+        </div>
+    </form>
+
 </div>
 
 <!-- Bootstrap JS -->
