@@ -5,7 +5,69 @@
 	<meta charset="UTF-8">
 	<title>Hypermax</title>
 	<style>
-		/* Ton style reste inchangé */
+		.search-engine-container {
+			max-width: 800px;
+			margin: 0 auto;
+			padding: 20px;
+			background: #ffffff;
+			border-radius: 10px;
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+		}
+		.search-engine-card {
+			border: none;
+			border-radius: 10px;
+			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+			transition: transform 0.3s ease;
+			height: 100%;
+		}
+		.search-engine-card:hover {
+			transform: translateY(-5px);
+			box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+		}
+		.search-engine-card-img {
+			height: 180px;
+			object-fit: contain;
+			padding: 10px;
+			background: #f8f9fa;
+			border-top-left-radius: 10px;
+			border-top-right-radius: 10px;
+		}
+		.search-engine-card-title {
+			font-size: 1rem;
+			min-height: 2.5rem;
+		}
+		.search-engine-card-title a {
+			color: #0d6efd;
+			text-decoration: none;
+		}
+		.search-engine-card-title a:hover {
+			text-decoration: underline;
+		}
+		.search-engine-price {
+			color: #28a745;
+			font-weight: bold;
+			font-size: 1.1rem;
+		}
+		.search-engine-source {
+			font-size: 0.8em;
+			color: #6c757d;
+		}
+		.search-engine-description {
+			font-size: 0.85rem;
+			color: #6c757d;
+			min-height: 3rem;
+			overflow: hidden;
+			text-overflow: ellipsis;
+			display: -webkit-box;
+			-webkit-line-clamp: 3;
+			-webkit-box-orient: vertical;
+		}
+		.online-products-section {
+			margin-top: 2rem;
+			padding: 1.5rem;
+			background: #f8f9fa;
+			border-radius: 10px;
+		}
 	</style>
 </head>
 <body>
