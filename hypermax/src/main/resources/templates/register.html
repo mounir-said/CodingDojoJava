@@ -1,122 +1,104 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-	th:replace="~{base::layout(~{::section})}">
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+	  th:replace="~{base::layout(~{::section})}">
 <head>
-<meta charset="ISO-8859-1">
-<title>Insert title here</title>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Inscription</title>
 </head>
 <body>
-	<section>
-		<div class="container mt-5 p-5">
-			<div class="row">
-				<div class="col-md-5 p-5">
-					<img alt="" src="img/ecom.png" width="100%" height="400px">
-				</div>
-				<div class="col-md-7 p-2">
-					<div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
-						<div class="card-header text-center">
-							<p class="fs-4 text-center">Register</p>
-							<th:block th:if="${session.succMsg}">
-								<p class="text-success fw-bold">[[${session.succMsg}]]</p>
-								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
-							</th:block>
+<section>
+	<div class="container mt-5 p-5">
+		<div class="row">
+			<div class="col-md-5 p-5">
+				<img alt="Image e-commerce" src="img/ecom.png" width="100%" height="400px">
+			</div>
+			<div class="col-md-7 p-2">
+				<div class="card shadow p-3 mb-5 bg-body-tertiary rounded">
+					<div class="card-header text-center">
+						<p class="fs-4 text-center">Inscription</p>
+						<th:block th:if="${session.succMsg}">
+							<p class="text-success fw-bold">[[${session.succMsg}]]</p>
+							<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+						</th:block>
 
-							<th:block th:if="${session.errorMsg}">
-								<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
-								<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
-							</th:block>
-						</div>
-						<div class="card-body">
-							<form action="/saveUser" enctype="multipart/form-data" id="userRegister" novalidate
-								method="post">
-								<div class="row">
-									<div class="col">
-										<label class="form-label">Full Name</label> <input required
-											class="form-control" name="name" type="text">
-									</div>
-
-									<div class="col">
-										<label class="form-label">Mobile Number</label> <input
-											required class="form-control" name="mobileNumber"
-											type="number">
-									</div>
-
+						<th:block th:if="${session.errorMsg}">
+							<p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+							<th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+						</th:block>
+					</div>
+					<div class="card-body">
+						<form action="/saveUser" enctype="multipart/form-data" id="userRegister" novalidate
+							  method="post">
+							<div class="row">
+								<div class="col">
+									<label class="form-label" for="name">Nom complet</label>
+									<input required class="form-control" id="name" name="name" type="text" placeholder="Entrez votre nom complet">
 								</div>
 
-								<div class="mb-3">
-									<label class="form-label">Email</label> <input required
-										class="form-control" name="email" type="email">
+								<div class="col">
+									<label class="form-label" for="mobileNumber">Numéro de téléphone</label>
+									<input required class="form-control" id="mobileNumber" name="mobileNumber" type="number" placeholder="Entrez votre numéro">
+								</div>
+							</div>
+
+							<div class="mb-3">
+								<label class="form-label" for="email">E-mail</label>
+								<input required class="form-control" id="email" name="email" type="email" placeholder="Entrez votre e-mail">
+							</div>
+
+							<div class="row">
+								<div class="col">
+									<label class="form-label" for="address">Adresse</label>
+									<input required class="form-control" id="address" name="address" type="text" placeholder="Entrez votre adresse">
 								</div>
 
+								<div class="col">
+									<label class="form-label" for="city">Ville</label>
+									<input required class="form-control" id="city" name="city" type="text" placeholder="Entrez votre ville">
+								</div>
+							</div>
 
-								<div class="row">
-									<div class="col">
-										<label class="form-label">Address</label> <input required
-											class="form-control" name="address" type="text">
-									</div>
-
-									<div class="col">
-										<label class="form-label">City</label> <input required
-											class="form-control" name="city" type="text">
-									</div>
-
+							<div class="row">
+								<div class="col">
+									<label class="form-label" for="state">État</label>
+									<input required class="form-control" id="state" name="state" type="text" placeholder="Entrez votre état">
 								</div>
 
-								<div class="row">
-									<div class="col">
-										<label class="form-label">State</label> <input required
-											class="form-control" name="state" type="text">
-									</div>
+								<div class="col">
+									<label class="form-label" for="pincode">Code postal</label>
+									<input required class="form-control" id="pincode" name="pincode" type="number" placeholder="Entrez votre code postal">
+								</div>
+							</div>
 
-									<div class="col">
-										<label class="form-label">Pincode</label> <input required
-											class="form-control" name="pincode" type="number">
-									</div>
-
+							<div class="row">
+								<div class="col">
+									<label class="form-label" for="pass">Mot de passe</label>
+									<input required class="form-control" id="pass" name="password" type="password" placeholder="Choisissez un mot de passe">
 								</div>
 
-
-								<div class="row">
-									<div class="col">
-										<label class="form-label">Password</label> <input required
-											class="form-control" name="password" type="password" id="pass">
-									</div>
-
-									<div class="col">
-										<label class="form-label">Confirm Password</label> <input
-											required class="form-control" name="confirmpassword"
-											type="password">
-									</div>
-
+								<div class="col">
+									<label class="form-label" for="confirmPassword">Confirmer le mot de passe</label>
+									<input required class="form-control" id="confirmPassword" name="confirmpassword" type="password" placeholder="Confirmez votre mot de passe">
 								</div>
+							</div>
 
+							<div class="mb-3">
+								<label class="form-label" for="img">Image de profil</label>
+								<input class="form-control" id="img" name="img" type="file">
+							</div>
 
+							<button type="submit" class="btn bg-primary text-white col-md-12">S'inscrire</button>
+						</form>
+					</div>
 
-								<div class="mb-3">
-									<label class="form-label">Profile Image</label> <input
-										class="form-control" name="img" type="file">
-								</div>
-
-
-
-
-
-
-								<button type="submit"
-									class="btn bg-primary text-white col-md-12">Register</button>
-							</form>
-						</div>
-
-						<div class="card-footer text-center">
-
-							have an account ? <a href="/login" class="text-decoration-none">Login
-							</a>
-						</div>
+					<div class="card-footer text-center">
+						Vous avez déjà un compte ? <a href="/login" class="text-decoration-none">Se connecter</a>
 					</div>
 				</div>
 			</div>
 		</div>
-
-	</section>
+	</div>
+</section>
 </body>
 </html>

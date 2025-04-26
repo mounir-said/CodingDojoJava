@@ -70,7 +70,7 @@ public class CommonUtil {
 		helper.setFrom("daspabitra55@gmail.com", "Shooping Cart");
 		helper.setTo(order.getOrderAddress().getEmail());
 
-		msg=msg.replace("[[name]]",order.getOrderAddress().getFirstName());
+		msg=msg.replace("[[name]]",order.getOrderAddress().getUserName());
 		msg=msg.replace("[[orderStatus]]",status);
 		msg=msg.replace("[[productName]]", order.getProduct().getTitle());
 		msg=msg.replace("[[category]]", order.getProduct().getCategory());

@@ -110,7 +110,7 @@ public class HomeController {
 		// Add saved online products (limit to 8 for display)
 		List<OnlineProduct> savedOnlineProducts = onlineProductService.findAllProducts()
 				.stream()
-				.limit(8)
+				.limit(52)
 				.collect(Collectors.toList());
 		m.addAttribute("savedOnlineProducts", savedOnlineProducts);
 

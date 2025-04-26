@@ -17,11 +17,11 @@ public class SecurityConfig {
 
 	@Autowired
 	private AuthenticationSuccessHandler authenticationSuccessHandler;
-	
+
 	@Autowired
 	@Lazy
 	private AuthFailureHandlerImpl authenticationFailureHandler;
-	
+
 	@Bean
 	public PasswordEncoder passwordEncoder() {
 		return new BCryptPasswordEncoder();
@@ -53,8 +53,9 @@ public class SecurityConfig {
 						.failureHandler(authenticationFailureHandler)
 						.successHandler(authenticationSuccessHandler))
 				.logout(logout->logout.permitAll());
-		
+
 		return http.build();
 	}
+
 
 }

@@ -7,9 +7,7 @@ import lombok.ToString;
 @Data
 public class OrderRequest {
 
-	private String firstName;
-
-	private String lastName;
+	private String userName;
 
 	private String email;
 
