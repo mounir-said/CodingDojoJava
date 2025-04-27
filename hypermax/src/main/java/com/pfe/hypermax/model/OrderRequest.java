@@ -7,7 +7,9 @@ import lombok.ToString;
 @Data
 public class OrderRequest {
 
-	private String userName;
+	private String firstName;
+
+	private String lastName;
 
 	private String email;
 
@@ -20,7 +22,7 @@ public class OrderRequest {
 	private String state;
 
 	private String pincode;
-	
+
 	private String paymentType;
 
 }
