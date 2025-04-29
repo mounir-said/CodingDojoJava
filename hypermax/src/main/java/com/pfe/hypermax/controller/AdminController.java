@@ -336,8 +336,6 @@ public class AdminController {
 		return "/admin/orders";
 	}
 
-
-
 	@PostMapping("/update-order-status")
 	public String updateOrderStatus(@RequestParam Integer id, @RequestParam Integer st, HttpSession session) {
 
@@ -368,8 +366,8 @@ public class AdminController {
 
 	@GetMapping("/search-order")
 	public String searchProduct(@RequestParam String orderId, Model m, HttpSession session,
-								@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-								@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
+			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+			@RequestParam(name = "pageSize", defaultValue = "10") Integer pageSize) {
 
 		if (orderId != null && orderId.length() > 0) {
 
@@ -403,8 +401,6 @@ public class AdminController {
 		return "/admin/orders";
 
 	}
-
-
 
 	@GetMapping("/add-admin")
 	public String loadAdminAdd() {

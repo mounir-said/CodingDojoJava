@@ -22,7 +22,7 @@ public class OrderRequest {
 	private String state;
 
 	private String pincode;
-
+	
 	private String paymentType;
 
 }

@@ -1,22 +1,5 @@
 package com.pfe.hypermax.controller;
 
-import com.pfe.hypermax.model.*;
-import com.pfe.hypermax.service.*;
-import com.pfe.hypermax.util.CommonUtil;
-import jakarta.mail.MessagingException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.data.domain.Page;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
-import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
@@ -26,36 +9,58 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.List;
+import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collectors;
+import java.util.stream.Collector;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.data.domain.Page;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
+import org.springframework.util.ObjectUtils;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+
+import com.pfe.hypermax.model.Category;
+import com.pfe.hypermax.model.Product;
+import com.pfe.hypermax.model.UserDtls;
+import com.pfe.hypermax.service.CartService;
+import com.pfe.hypermax.service.CategoryService;
+import com.pfe.hypermax.service.ProductService;
+import com.pfe.hypermax.service.UserService;
+import com.pfe.hypermax.util.CommonUtil;
+
+import io.micrometer.common.util.StringUtils;
+import jakarta.mail.MessagingException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpSession;
 
 @Controller
 public class HomeController {
 
-	private final CategoryService categoryService;
-	private final ProductService productService;
-	private final OnlineProductService onlineProductService;
-	private final UserService userService;
-	private final CommonUtil commonUtil;
-	private final BCryptPasswordEncoder passwordEncoder;
-	private final CartService cartService;
+	@Autowired
+	private CategoryService categoryService;
 
 	@Autowired
-	public HomeController(CategoryService categoryService,
-						  ProductService productService,
-						  OnlineProductService onlineProductService,
-						  UserService userService,
-						  CommonUtil commonUtil,
-						  BCryptPasswordEncoder passwordEncoder,
-						  CartService cartService) {
-		this.categoryService = categoryService;
-		this.productService = productService;
-		this.onlineProductService = onlineProductService;
-		this.userService = userService;
-		this.commonUtil = commonUtil;
-		this.passwordEncoder = passwordEncoder;
-		this.cartService = cartService;
-	}
+	private ProductService productService;
+
+	@Autowired
+	private UserService userService;
+
+	@Autowired
+	private CommonUtil commonUtil;
+
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
+	@Autowired
+	private CartService cartService;
 
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -66,74 +71,23 @@ public class HomeController {
 			Integer countCart = cartService.getCountCart(userDtls.getId());
 			m.addAttribute("countCart", countCart);
 		}
-		m.addAttribute("categorys", categoryService.getAllActiveCategory());
+
+		List<Category> allActiveCategory = categoryService.getAllActiveCategory();
+		m.addAttribute("categorys", allActiveCategory);
 	}
 
 	@GetMapping("/")
 	public String index(Model m) {
-		List<Category> featuredCategories = categoryService.getAllActiveCategory().stream()
-				.sorted((c1, c2) -> c2.getId().compareTo(c1.getId()))
-				.limit(6)
-				.toList();
 
-		List<Product> featuredProducts = productService.getAllActiveProducts("").stream()
-				.sorted((p1, p2) -> p2.getId().compareTo(p1.getId()))
-				.limit(8)
-				.toList();
-
-		m.addAttribute("category", featuredCategories);
-		m.addAttribute("products", featuredProducts);
+		List<Category> allActiveCategory = categoryService.getAllActiveCategory().stream()
+				.sorted((c1, c2) -> c2.getId().compareTo(c1.getId())).limit(6).toList();
+		List<Product> allActiveProducts = productService.getAllActiveProducts("").stream()
+				.sorted((p1, p2) -> p2.getId().compareTo(p1.getId())).limit(8).toList();
+		m.addAttribute("category", allActiveCategory);
+		m.addAttribute("products", allActiveProducts);
 		return "index";
 	}
 
-	@GetMapping("/products")
-	public String products(Model m,
-						   @RequestParam(value = "category", defaultValue = "") String category,
-						   @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-						   @RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
-						   @RequestParam(defaultValue = "") String ch) {
-
-		// Add categories for sidebar
-		m.addAttribute("paramValue", category);
-		m.addAttribute("categories", categoryService.getAllActiveCategory());
-		m.addAttribute("searchRequest", new SearchRequest());
-
-		// Get paginated products
-		Page<Product> page = StringUtils.isEmpty(ch)
-				? productService.getAllActiveProductPagination(pageNo, pageSize, category)
-				: productService.searchActiveProductPagination(pageNo, pageSize, category, ch);
-
-		List<Product> products = page.getContent();
-		m.addAttribute("products", products);
-		m.addAttribute("productsSize", products.size());
-
-		// Add saved online products (limit to 8 for display)
-		List<OnlineProduct> savedOnlineProducts = onlineProductService.findAllProducts()
-				.stream()
-				.limit(52)
-				.collect(Collectors.toList());
-		m.addAttribute("savedOnlineProducts", savedOnlineProducts);
-
-		// Pagination attributes
-		addPaginationAttributes(m, page, pageSize);
-
-		return "product";
-	}
-
-	@GetMapping("/product/{id}")
-	public String product(@PathVariable int id, Model m) {
-		m.addAttribute("product", productService.getProductById(id));
-		return "view_product";
-	}
-
-	@GetMapping("/search")
-	public String searchProduct(@RequestParam String ch, Model m) {
-		m.addAttribute("products", productService.searchProduct(ch));
-		m.addAttribute("categories", categoryService.getAllActiveCategory());
-		return "product";
-	}
-
-	// Authentication related methods
 	@GetMapping("/signin")
 	public String login() {
 		return "login";
@@ -144,63 +98,122 @@ public class HomeController {
 		return "register";
 	}
 
+	@GetMapping("/products")
+	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category,
+			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+			@RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
+			@RequestParam(defaultValue = "") String ch) {
+
+		List<Category> categories = categoryService.getAllActiveCategory();
+		m.addAttribute("paramValue", category);
+		m.addAttribute("categories", categories);
+
+//		List<Product> products = productService.getAllActiveProducts(category);
+//		m.addAttribute("products", products);
+		Page<Product> page = null;
+		if (StringUtils.isEmpty(ch)) {
+			page = productService.getAllActiveProductPagination(pageNo, pageSize, category);
+		} else {
+			page = productService.searchActiveProductPagination(pageNo, pageSize, category, ch);
+		}
+
+		List<Product> products = page.getContent();
+		m.addAttribute("products", products);
+		m.addAttribute("productsSize", products.size());
+
+		m.addAttribute("pageNo", page.getNumber());
+		m.addAttribute("pageSize", pageSize);
+		m.addAttribute("totalElements", page.getTotalElements());
+		m.addAttribute("totalPages", page.getTotalPages());
+		m.addAttribute("isFirst", page.isFirst());
+		m.addAttribute("isLast", page.isLast());
+
+		return "product";
+	}
+
+	@GetMapping("/product/{id}")
+	public String product(@PathVariable int id, Model m) {
+		Product productById = productService.getProductById(id);
+		m.addAttribute("product", productById);
+		return "view_product";
+	}
+
 	@PostMapping("/saveUser")
-	public String saveUser(@ModelAttribute UserDtls user,
-						   @RequestParam("img") MultipartFile file,
-						   HttpSession session) throws IOException {
+	public String saveUser(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile file, HttpSession session)
+			throws IOException {
 
-		if (userService.existsEmail(user.getEmail())) {
-			session.setAttribute("errorMsg", "Email already exists");
-			return "redirect:/register";
+		Boolean existsEmail = userService.existsEmail(user.getEmail());
+
+		if (existsEmail) {
+			session.setAttribute("errorMsg", "Email already exist");
+		} else {
+			String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+			user.setProfileImage(imageName);
+			UserDtls saveUser = userService.saveUser(user);
+
+			if (!ObjectUtils.isEmpty(saveUser)) {
+				if (!file.isEmpty()) {
+					File saveFile = new ClassPathResource("static/img").getFile();
+
+					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
+							+ file.getOriginalFilename());
+
+//					System.out.println(path);
+					Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				}
+				session.setAttribute("succMsg", "Register successfully");
+			} else {
+				session.setAttribute("errorMsg", "something wrong on server");
+			}
 		}
 
-		String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
-		user.setProfileImage(imageName);
-		UserDtls savedUser = userService.saveUser(user);
-
-		if (!ObjectUtils.isEmpty(savedUser) && !file.isEmpty()) {
-			saveProfileImage(file);
-		}
-
-		session.setAttribute(savedUser != null ? "succMsg" : "errorMsg",
-				savedUser != null ? "Register successfully" : "Something went wrong");
 		return "redirect:/register";
 	}
 
-	// Password reset methods
+//	Forgot Password Code 
+
 	@GetMapping("/forgot-password")
 	public String showForgotPassword() {
-		return "forgot_password";
+		return "forgot_password.html";
 	}
 
 	@PostMapping("/forgot-password")
-	public String processForgotPassword(@RequestParam String email,
-										HttpSession session,
-										HttpServletRequest request)
+	public String processForgotPassword(@RequestParam String email, HttpSession session, HttpServletRequest request)
 			throws UnsupportedEncodingException, MessagingException {
 
-		UserDtls user = userService.getUserByEmail(email);
-		if (ObjectUtils.isEmpty(user)) {
+		UserDtls userByEmail = userService.getUserByEmail(email);
+
+		if (ObjectUtils.isEmpty(userByEmail)) {
 			session.setAttribute("errorMsg", "Invalid email");
-			return "redirect:/forgot-password";
+		} else {
+
+			String resetToken = UUID.randomUUID().toString();
+			userService.updateUserResetToken(email, resetToken);
+
+			// Generate URL :
+			// http://localhost:8080/reset-password?token=sfgdbgfswegfbdgfewgvsrg
+
+			String url = CommonUtil.generateUrl(request) + "/reset-password?token=" + resetToken;
+
+			Boolean sendMail = commonUtil.sendMail(url, email);
+
+			if (sendMail) {
+				session.setAttribute("succMsg", "Please check your email..Password Reset link sent");
+			} else {
+				session.setAttribute("errorMsg", "Somethong wrong on server ! Email not send");
+			}
 		}
 
-		String resetToken = UUID.randomUUID().toString();
-		userService.updateUserResetToken(email, resetToken);
-
-		String resetUrl = CommonUtil.generateUrl(request) + "/reset-password?token=" + resetToken;
-		boolean emailSent = commonUtil.sendMail(resetUrl, email);
-
-		session.setAttribute(emailSent ? "succMsg" : "errorMsg",
-				emailSent ? "Please check your email" : "Email not sent");
 		return "redirect:/forgot-password";
 	}
 
 	@GetMapping("/reset-password")
-	public String showResetPassword(@RequestParam String token, Model m) {
-		UserDtls user = userService.getUserByToken(token);
-		if (user == null) {
-			m.addAttribute("msg", "Invalid or expired link");
+	public String showResetPassword(@RequestParam String token, HttpSession session, Model m) {
+
+		UserDtls userByToken = userService.getUserByToken(token);
+
+		if (userByToken == null) {
+			m.addAttribute("msg", "Your link is invalid or expired !!");
 			return "message";
 		}
 		m.addAttribute("token", token);
@@ -208,36 +221,33 @@ public class HomeController {
 	}
 
 	@PostMapping("/reset-password")
-	public String resetPassword(@RequestParam String token,
-								@RequestParam String password,
-								Model m) {
-		UserDtls user = userService.getUserByToken(token);
-		if (user == null) {
-			m.addAttribute("errorMsg", "Invalid or expired link");
+	public String resetPassword(@RequestParam String token, @RequestParam String password, HttpSession session,
+			Model m) {
+
+		UserDtls userByToken = userService.getUserByToken(token);
+		if (userByToken == null) {
+			m.addAttribute("errorMsg", "Your link is invalid or expired !!");
+			return "message";
+		} else {
+			userByToken.setPassword(passwordEncoder.encode(password));
+			userByToken.setResetToken(null);
+			userService.updateUser(userByToken);
+			// session.setAttribute("succMsg", "Password change successfully");
+			m.addAttribute("msg", "Password change successfully");
+
 			return "message";
 		}
 
-		user.setPassword(passwordEncoder.encode(password));
-		user.setResetToken(null);
-		userService.updateUser(user);
-		m.addAttribute("msg", "Password changed successfully");
-		return "message";
 	}
 
-	// Helper methods
-	private void addPaginationAttributes(Model m, Page<?> page, int pageSize) {
-		m.addAttribute("pageNo", page.getNumber());
-		m.addAttribute("pageSize", pageSize);
-		m.addAttribute("totalElements", page.getTotalElements());
-		m.addAttribute("totalPages", page.getTotalPages());
-		m.addAttribute("isFirst", page.isFirst());
-		m.addAttribute("isLast", page.isLast());
+	@GetMapping("/search")
+	public String searchProduct(@RequestParam String ch, Model m) {
+		List<Product> searchProducts = productService.searchProduct(ch);
+		m.addAttribute("products", searchProducts);
+		List<Category> categories = categoryService.getAllActiveCategory();
+		m.addAttribute("categories", categories);
+		return "product";
+
 	}
 
-	private void saveProfileImage(MultipartFile file) throws IOException {
-		File saveFile = new ClassPathResource("static/img").getFile();
-		Path path = Paths.get(saveFile.getAbsolutePath() + File.separator +
-				"profile_img" + File.separator + file.getOriginalFilename());
-		Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
-	}
 }

@@ -19,28 +19,12 @@ public class OnlineProductService {
         this.onlineProductRepository = onlineProductRepository;
     }
 
-    // Save or update a product
-    public OnlineProduct saveProduct(OnlineProduct onlineProduct) {
-        // Check if product with same URL already exists
-        if (onlineProduct.getUrl() != null && existsByUrl(onlineProduct.getUrl())) {
-            // Update existing product or skip
-            OnlineProduct existing = onlineProductRepository.findByUrl(onlineProduct.getUrl());
-            existing.setTitle(onlineProduct.getTitle());
-            existing.setPrice(onlineProduct.getPrice());
-            existing.setDescription(onlineProduct.getDescription());
-            existing.setImageUrl(onlineProduct.getImageUrl());
-            existing.setSource(onlineProduct.getSource());
-            return onlineProductRepository.save(existing);
+    public void saveProducts(List<OnlineProduct> products) {
+        for (OnlineProduct product : products) {
+            onlineProductRepository.save(product); // Corrected: use the instance
         }
-        return onlineProductRepository.save(onlineProduct);
     }
 
-    // Save multiple products with duplicate check
-    public List<OnlineProduct> saveAllProducts(List<OnlineProduct> products) {
-        return products.stream()
-                .map(this::saveProduct)
-                .toList();
-    }
 
     // Find by ID
     public Optional<OnlineProduct> findById(Long id) {

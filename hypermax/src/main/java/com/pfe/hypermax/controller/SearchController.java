@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 @Controller
@@ -49,26 +50,35 @@ public class SearchController {
 
         List<SearchResult> results = mcpService.searchAndStore(searchRequest.getQuery());
 
-        results.forEach(result -> {
-            OnlineProduct onlineProduct = new OnlineProduct();
-            onlineProduct.setTitle(result.getTitle());
-            onlineProduct.setUrl(result.getUrl());
-            onlineProduct.setDescription(result.getDescription());
-            onlineProduct.setImageUrl(result.getImage());
-            onlineProduct.setSource(result.getSource());
+        List<OnlineProduct> productsToSave = new ArrayList<>();
 
-            try {
-                String cleanPrice = result.getPrice().replaceAll("[^0-9.]", "");
-                onlineProduct.setPrice(new BigDecimal(cleanPrice));
-            } catch (Exception e) {
-                onlineProduct.setPrice(BigDecimal.ZERO);
+        for (SearchResult result : results) {
+            if (!onlineProductService.existsByUrl(result.getUrl())) {  // 🛡️ Check before saving
+                OnlineProduct onlineProduct = new OnlineProduct();
+                onlineProduct.setTitle(result.getTitle());
+                onlineProduct.setUrl(result.getUrl());
+                onlineProduct.setDescription(result.getDescription());
+                onlineProduct.setImageUrl(result.getImage());
+                onlineProduct.setSource(result.getSource());
+
+                try {
+                    String cleanPrice = result.getPrice().replaceAll("[^0-9.]", "");
+                    onlineProduct.setPrice(new BigDecimal(cleanPrice));
+                } catch (Exception e) {
+                    onlineProduct.setPrice(BigDecimal.ZERO);
+                }
+
+                productsToSave.add(onlineProduct);
             }
+            // else: duplicate URL, skip
+        }
 
-            onlineProductService.saveProduct(onlineProduct);
-        });
+        onlineProductService.saveProducts(productsToSave);
 
         model.addAttribute("results", results);
         model.addAttribute("savedResults", mcpService.getSavedResults());
         return "search";
     }
+
+
 }

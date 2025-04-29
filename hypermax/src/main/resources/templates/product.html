@@ -3,82 +3,17 @@
 	  th:replace="~{base::layout(~{::section})}">
 <head>
 	<meta charset="UTF-8">
-	<title>Hypermax</title>
-	<style>
-		.search-engine-container {
-			max-width: 800px;
-			margin: 0 auto;
-			padding: 20px;
-			background: #ffffff;
-			border-radius: 10px;
-			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-		}
-		.search-engine-card {
-			border: none;
-			border-radius: 10px;
-			box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-			transition: transform 0.3s ease;
-			height: 100%;
-		}
-		.search-engine-card:hover {
-			transform: translateY(-5px);
-			box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-		}
-		.search-engine-card-img {
-			height: 180px;
-			object-fit: contain;
-			padding: 10px;
-			background: #f8f9fa;
-			border-top-left-radius: 10px;
-			border-top-right-radius: 10px;
-		}
-		.search-engine-card-title {
-			font-size: 1rem;
-			min-height: 2.5rem;
-		}
-		.search-engine-card-title a {
-			color: #0d6efd;
-			text-decoration: none;
-		}
-		.search-engine-card-title a:hover {
-			text-decoration: underline;
-		}
-		.search-engine-price {
-			color: #28a745;
-			font-weight: bold;
-			font-size: 1.1rem;
-		}
-		.search-engine-source {
-			font-size: 0.8em;
-			color: #6c757d;
-		}
-		.search-engine-description {
-			font-size: 0.85rem;
-			color: #6c757d;
-			min-height: 3rem;
-			overflow: hidden;
-			text-overflow: ellipsis;
-			display: -webkit-box;
-			-webkit-line-clamp: 3;
-			-webkit-box-orient: vertical;
-		}
-		.online-products-section {
-			margin-top: 2rem;
-			padding: 1.5rem;
-			background: #f8f9fa;
-			border-radius: 10px;
-		}
-	</style>
+	<title>Produits</title>
 </head>
 <body>
 <section>
-	<!-- Section principale de recherche -->
-	<div class="container-fluid bg-dark p-4 mt-5">
+
+	<div class="container-fluid bg-dark p-4 mt-5 ">
 		<div class="row">
 			<div class="col-md-8 offset-md-2">
 				<form action="/products" method="get">
 					<div class="input-group">
-						<input type="text" class="form-control" name="ch" placeholder="Rechercher un produit...">
+						<input type="text" class="form-control" name="ch">
 						<button class="btn btn-light text-dark ms-3 col-md-2">
 							<i class="fa-solid fa-magnifying-glass"></i> Rechercher
 						</button>
@@ -88,71 +23,14 @@
 		</div>
 	</div>
 
-	<!-- Section moteur de recherche -->
-	<div class="container mt-4">
-		<div class="search-engine-container">
-			<h1 class="mb-4 text-center">Recherche en ligne</h1>
-
-			<!-- Formulaire moteur de recherche -->
-			<form th:action="@{/search-engine/perform}" th:object="${searchRequest}" method="post">
-				<div class="input-group mb-3">
-					<input type="text" class="form-control"
-						   th:field="*{query}"
-						   placeholder="Rechercher des produits sur le web..."
-						   required>
-					<button class="btn btn-primary" type="submit">Rechercher</button>
-				</div>
-				<div th:if="${#fields.hasErrors('query')}" class="alert alert-danger">
-					<span th:errors="*{query}"></span>
-				</div>
-			</form>
-
-			<!-- Résultats moteur de recherche -->
-			<div th:if="${results != null && !results.isEmpty()}" class="results-container">
-				<div class="d-flex justify-content-between align-items-center mb-3">
-					<h3>Résultats de recherche en ligne</h3>
-					<a th:href="@{/products}" class="btn btn-outline-secondary">Retour à nos produits</a>
-				</div>
-				<div class="row">
-					<div class="col-md-6 col-lg-4 mb-4" th:each="result : ${results}">
-						<div class="search-engine-card">
-							<img th:src="${result.image}"
-								 alt="Image produit"
-								 class="search-engine-card-img"
-								 th:if="${result.image != null}"
-								 onerror="this.src='/img/default-product.png'">
-							<div class="card-body">
-								<h5 class="search-engine-card-title">
-									<a th:href="${result.url}" target="_blank" th:text="${result.title}"></a>
-								</h5>
-								<p class="search-engine-description" th:text="${result.description}"></p>
-								<p class="search-engine-price"
-								   th:text="${result.price != null ? result.price + ' TND' : 'Prix non disponible'}">
-								</p>
-								<p class="search-engine-source" th:text="'Source : ' + ${result.source}"></p>
-								<a th:href="${result.url}" target="_blank" class="btn btn-sm btn-primary w-100 mt-2">
-									Voir le produit
-								</a>
-							</div>
-						</div>
-					</div>
-				</div>
-			</div>
-
-			<div th:if="${results != null && results.isEmpty()}" class="alert alert-info">
-				Aucun résultat trouvé pour votre recherche.
-			</div>
-		</div>
-	</div>
-
-	<!-- Section catégories de produits -->
-	<div class="container-fluid mt-4">
+	<div class="container-fluid mt-1">
 		<div class="row">
+
 			<div class="col-md-2 p-0">
 				<div class="card shadow-sm p-0 mb-5 bg-body-tertiary rounded">
 					<div class="card-body">
 						<div class="list-group">
-							<p class="fs-5">Catégories</p>
+							<p class="fs-5">Catégorie</p>
 							<a href="/products"
 							   th:classappend="${paramValue==''} ? 'active':''"
 							   class="list-group-item list-group-item-action"
@@ -169,9 +47,10 @@
 			<div class="col-md-10">
 				<div class="card">
 					<div class="card-body">
-						<p class="fs-3 text-center">Nos produits</p>
+						<p class="fs-3 text-center">Produits</p>
 						<div class="row">
-							<th:block th:if="${productsSize > 0}">
+
+							<th:block th:if="${productsSize >0}">
 								<div class="col-md-3 mt-2" th:each="p:${products}">
 									<div class="card card-sh">
 										<div class="card-body text-center">
@@ -179,91 +58,74 @@
 												 width="150px" height="150px">
 											<p class="fs-5 text-center">[[${p.title}]]</p>
 											<div class="row text-center">
-												<p class="fs-6 fw-bold ">
-													<span>[[${p.discountPrice}]] TND</span> <br>
+												<p class="fs-6 fw-bold">
+													<span>TND [[${p.discountPrice}]]</span> <br>
 													<span class="text-decoration-line-through text-secondary">
-                                                        [[${p.price}]] TND
-                                                    </span>
-													<span class="fs-6 text-success">[[${p.discount}]]% de réduction</span>
+		TND [[${p.price}]]
+	</span>
+													<span class="fs-6 text-success">
+		[[${p.discount}]]% de réduction
+	</span>
 												</p>
+
 												<a th:href="@{'/product/'+${p.id}}"
-												   class="btn btn-primary col-md-6 offset-md-3">Voir détails</a>
+												   class="btn btn-primary col-md-6 offset-md-3">
+													Voir les détails
+												</a>
 											</div>
 										</div>
 									</div>
 								</div>
 							</th:block>
 
-							<th:block th:unless="${productsSize > 0}">
-								<div class="col-12">
-									<p class="fs-4 text-center mt-4 text-danger">Aucun produit local disponible</p>
-
-									<!-- Produits en ligne sauvegardés -->
-									<div th:if="${not #lists.isEmpty(savedOnlineProducts)}" class="online-products-section">
-										<h4 class="text-center mb-4">Produits en ligne susceptibles de vous plaire</h4>
-										<div class="row">
-											<div class="col-md-3 mt-3" th:each="op : ${savedOnlineProducts}">
-												<div class="search-engine-card">
-													<img th:src="${op.imageUrl}"
-														 alt="Produit en ligne"
-														 class="search-engine-card-img"
-														 th:if="${not #strings.isEmpty(op.imageUrl)}"
-														 onerror="this.src='/img/default-product.png'">
-													<div class="card-body">
-														<h5 class="search-engine-card-title">
-															<a th:href="${op.url}"
-															   target="_blank"
-															   th:text="${op.title} ?: 'Titre non disponible'"></a>
-														</h5>
-														<p class="search-engine-description"
-														   th:text="${op.description} ?: 'Description non disponible'"></p>
-														<p class="search-engine-price mb-2"
-														   th:if="${op.price != null}"
-														   th:text="${#numbers.formatDecimal(op.price, 1, 2, 'COMMA')} + ' TND'">
-														</p>
-														<p class="search-engine-source mb-2"
-														   th:text="'Source : ' + (${op.source} ?: 'Source inconnue')"></p>
-														<a th:href="${op.url}"
-														   target="_blank"
-														   class="btn btn-sm btn-outline-primary w-100">
-															Voir le produit
-														</a>
-													</div>
-												</div>
-											</div>
-										</div>
-									</div>
-
-									<div th:if="${#lists.isEmpty(savedOnlineProducts)}" class="text-center mt-4">
-										<p class="text-muted">Aucun produit en ligne disponible</p>
-									</div>
-								</div>
+							<th:block th:unless="${productsSize>0}">
+								<p class="fs-4 text-center mt-4 text-danger">Produit non disponible</p>
 							</th:block>
 						</div>
 					</div>
 				</div>
 
 				<!-- Pagination -->
-				<div class="row mt-3">
-					<div class="col-md-4">
-						Total produits : [[${totalElements}]]
-					</div>
-					<div class="col-md-8">
-						<nav th:if="${totalPages > 1}" aria-label="Pagination">
-							<ul class="pagination justify-content-end">
-								<li th:each="i : ${#numbers.sequence(0, totalPages-1)}"
-									th:classappend="${currentPage == i} ? 'active' : ''"
-									class="page-item">
-									<a th:href="@{'/products?page='+${i}}" class="page-link">[[${i + 1}]]</a>
-								</li>
-							</ul>
-						</nav>
+				<div class="row">
+					<div class="col-md-4">Total des produits : [[${totalElements}]]</div>
+					<div class="col-md-6">
+						<th:block th:if="${productsSize>0}">
+							<nav aria-label="Pagination">
+								<ul class="pagination">
+									<li class="page-item"
+										th:classappend="${isFirst} ? 'disabled':''">
+										<a class="page-link"
+										   th:href="@{'/products?pageNo='+${pageNo-1}}"
+										   aria-label="Précédent">
+											<span aria-hidden="true">&laquo;</span>
+										</a>
+									</li>
+
+									<li th:each="i:${#numbers.sequence(1,totalPages)}"
+										class="page-item"
+										th:classappend="${pageNo+1==i}?'active':''">
+										<a class="page-link"
+										   th:href="@{'/products?pageNo='+${i-1}}">[[${i}]]</a>
+									</li>
+
+									<li class="page-item"
+										th:classappend="${isLast} ? 'disabled':''">
+										<a class="page-link"
+										   th:href="@{'/products?pageNo='+${pageNo+1}}"
+										   aria-label="Suivant">
+											<span aria-hidden="true">&raquo;</span>
+										</a>
+									</li>
+								</ul>
+							</nav>
+						</th:block>
 					</div>
 				</div>
 
 			</div>
 		</div>
 	</div>
+
 </section>
 </body>
 </html>

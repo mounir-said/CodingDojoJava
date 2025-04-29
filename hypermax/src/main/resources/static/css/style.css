@@ -11,38 +11,3 @@
 .error {
 	color: red;
 }
-
-.search-engine-card {
-	transition: transform 0.3s ease;
-	display: flex;
-	flex-direction: column;
-}
-.search-engine-card:hover {
-	transform: translateY(-5px);
-	box-shadow: 0 10px 20px rgba(0,0,0,0.1);
-}
-.search-engine-card-img {
-	height: 180px;
-	object-fit: contain;
-	padding: 10px;
-	background: #f8f9fa;
-}
-.search-engine-card-title {
-	font-size: 1rem;
-	min-height: 2.5rem;
-}
-.search-engine-price {
-	color: #28a745;
-	font-weight: bold;
-	font-size: 1.1rem;
-}
-.card-text.small {
-	font-size: 0.85rem;
-	color: #6c757d;
-	min-height: 3rem;
-	overflow: hidden;
-	text-overflow: ellipsis;
-	display: -webkit-box;
-	-webkit-line-clamp: 3;
-	-webkit-box-orient: vertical;
-}
