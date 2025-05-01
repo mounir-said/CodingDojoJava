@@ -3,16 +3,21 @@ package com.pfe.hypermax.controller;
 import java.io.File;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.math.BigDecimal;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.UUID;
 import java.util.stream.Collector;
 
+import com.pfe.hypermax.model.*;
+import com.pfe.hypermax.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.domain.Page;
@@ -20,6 +25,7 @@ import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,13 +33,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pfe.hypermax.model.Category;
-import com.pfe.hypermax.model.Product;
-import com.pfe.hypermax.model.UserDtls;
-import com.pfe.hypermax.service.CartService;
-import com.pfe.hypermax.service.CategoryService;
-import com.pfe.hypermax.service.ProductService;
-import com.pfe.hypermax.service.UserService;
 import com.pfe.hypermax.util.CommonUtil;
 
 import io.micrometer.common.util.StringUtils;
@@ -61,6 +60,12 @@ public class HomeController {
 
 	@Autowired
 	private CartService cartService;
+
+	@Autowired
+	private McpService mcpService;
+
+	@Autowired
+	private OnlineProductService onlineProductService;
 
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -170,7 +175,7 @@ public class HomeController {
 		return "redirect:/register";
 	}
 
-//	Forgot Password Code 
+//	Forgot Password Code
 
 	@GetMapping("/forgot-password")
 	public String showForgotPassword() {
@@ -250,4 +255,53 @@ public class HomeController {
 
 	}
 
+	@GetMapping("/search-engine/")
+	public String showSearchForm(Model model) throws IOException {
+		model.addAttribute("searchRequest", new SearchRequest());
+		model.addAttribute("savedResults", mcpService.getSavedResults());
+		return "search";
+	}
+
+	@PostMapping("/search-engine/perform")
+	public String search(
+			@Valid @ModelAttribute("searchRequest") SearchRequest searchRequest,
+			BindingResult bindingResult,
+			Model model) throws IOException {
+
+		if (bindingResult.hasErrors()) {
+			model.addAttribute("savedResults", mcpService.getSavedResults());
+			return "search";
+		}
+
+		List<SearchResult> results = mcpService.searchAndStore(searchRequest.getQuery());
+
+		List<OnlineProduct> productsToSave = new ArrayList<>();
+
+		for (SearchResult result : results) {
+			if (!onlineProductService.existsByUrl(result.getUrl())) {  // 🛡️ Check before saving
+				OnlineProduct onlineProduct = new OnlineProduct();
+				onlineProduct.setTitle(result.getTitle());
+				onlineProduct.setUrl(result.getUrl());
+				onlineProduct.setDescription(result.getDescription());
+				onlineProduct.setImageUrl(result.getImage());
+				onlineProduct.setSource(result.getSource());
+
+				try {
+					String cleanPrice = result.getPrice().replaceAll("[^0-9.]", "");
+					onlineProduct.setPrice(new BigDecimal(cleanPrice));
+				} catch (Exception e) {
+					onlineProduct.setPrice(BigDecimal.ZERO);
+				}
+
+				productsToSave.add(onlineProduct);
+			}
+			// else: duplicate URL, skip
+		}
+
+		onlineProductService.saveProducts(productsToSave);
+
+		model.addAttribute("results", results);
+		model.addAttribute("savedResults", mcpService.getSavedResults());
+		return "search";
+	}
 }

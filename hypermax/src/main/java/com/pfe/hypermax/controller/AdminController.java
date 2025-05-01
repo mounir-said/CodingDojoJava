@@ -7,6 +7,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -62,6 +63,8 @@ public class AdminController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	private static final String SEARCH_RESULTS_PATH = "C:\\Users\\PROBOOK\\Desktop\\PFE\\hypermax\\mcp-storage\\search_results.txt";
 
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
@@ -470,6 +473,43 @@ public class AdminController {
 		}
 
 		return "redirect:/admin/profile";
+	}
+
+	@GetMapping("/search-history")
+	public String showSearchHistory(Model model) {
+		List<String> searchEntries = parseSearchHistory();
+		model.addAttribute("searchEntries", searchEntries);
+		return "admin/searchhistory";
+	}
+
+	private List<String> parseSearchHistory() {
+		List<String> entries = new ArrayList<>();
+		Path path = Paths.get(SEARCH_RESULTS_PATH);
+
+		try {
+			if (Files.exists(path)) {
+				String content = Files.readString(path);
+				// Split by the === delimiter
+				String[] rawEntries = content.split("=== ");
+
+				for (String entry : rawEntries) {
+					if (!entry.trim().isEmpty()) {
+						entries.add(entry.trim());
+					}
+				}
+			} else {
+				entries.add("Search history file not found at: " + SEARCH_RESULTS_PATH);
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			entries.add("Error reading search history: " + e.getMessage());
+		}
+
+		if (entries.isEmpty()) {
+			entries.add("No search history found");
+		}
+
+		return entries;
 	}
 
 }
