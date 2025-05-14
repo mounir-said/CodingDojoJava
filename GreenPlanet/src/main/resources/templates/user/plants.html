@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nos plantes | GreenPlanet</title>
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .plants-main {
+            padding: 20px;
+        }
+        .search-container {
+            margin-bottom: 20px;
+            display: flex;
+            max-width: 500px;
+        }
+        .search-container input {
+            flex: 1;
+            padding: 10px 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px 0 0 4px;
+            font-size: 16px;
+        }
+        .search-container button {
+            padding: 0 15px;
+            background: #2e7d32;
+            color: white;
+            border: none;
+            border-radius: 0 4px 4px 0;
+            cursor: pointer;
+        }
+        .plants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        .plant-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+            background: white;
+        }
+        .plant-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .plant-image {
+            height: 200px;
+            overflow: hidden;
+        }
+        .plant-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        .plant-info {
+            padding: 15px;
+        }
+        .plant-info h3 {
+            margin: 0 0 10px;
+            color: #2e7d32;
+        }
+        .plant-meta {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 15px;
+            color: #666;
+        }
+        .badge {
+            display: inline-block;
+            padding: 3px 8px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 600;
+            background-color: #e0f2f1;
+            color: #00796b;
+        }
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 5px;
+        }
+        .pagination a {
+            padding: 8px 12px;
+            border: 1px solid #e0e0e0;
+            border-radius: 4px;
+            text-decoration: none;
+            color: #2e7d32;
+            transition: all 0.3s;
+        }
+        .pagination a:hover {
+            background: #e8f5e9;
+        }
+        .pagination a.active {
+            background: #2e7d32;
+            color: white;
+            border-color: #2e7d32;
+        }
+        .pagination a.disabled {
+            color: #bdbdbd;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="/images/logo.webp" alt="Logo GreenPlanet" class="logo">
+            <h2>GreenPlanet</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="/user/dashboard">
+                <i class="fas fa-tachometer-alt"></i> Accueil
+            </a>
+            <a href="/user/plants" class="active">
+                <i class="fas fa-leaf"></i> Plantes disponibles
+            </a>
+            <a href="/user/reservations">
+                <i class="fas fa-calendar-check"></i> Mes réservations
+            </a>
+            <a th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-leaf"></i> Notre collection de plantes</h1>
+            <div class="user-info">
+                <span th:text="${currentUser.username}"></span>
+            </div>
+        </header>
+
+        <!-- Formulaire de recherche -->
+        <div class="search-container">
+            <form th:action="@{/user/plants}" method="get">
+                <input type="text" name="search" th:value="${search}"
+                       placeholder="Rechercher des plantes..." aria-label="Rechercher des plantes">
+                <button type="submit" aria-label="Rechercher">
+                    <i class="fas fa-search"></i>
+                </button>
+                <input type="hidden" name="size" th:value="${size}">
+            </form>
+        </div>
+
+        <!-- Grille des plantes -->
+        <div class="plants-grid">
+            <div class="plant-card" th:each="plant : ${plants}">
+                <a th:href="@{'/user/view-plant/' + ${plant.id}}" class="plant-link">
+                    <div class="plant-image">
+                        <img th:src="@{'/img/plant_img/' + ${plant.image_filename}}"
+                             alt="${plant.name}"
+                             onerror="this.src='/images/plant-placeholder.webp'">
+                    </div>
+                    <div class="plant-info">
+                        <h3 th:text="${plant.name}"></h3>
+                        <span class="badge" th:text="${plant.category}"></span>
+                        <div class="plant-meta">
+                            <span th:text="${#numbers.formatDecimal(plant.price, 1, 2, 'POINT') + ' €'}"></span>
+                            <span th:text="${plant.quantity} + ' disponibles'"></span>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination" th:if="${totalPages > 1}">
+            <a th:href="@{/user/plants(page=0, size=${size}, search=${search})}"
+               th:classappend="${currentPage == 0} ? 'disabled' : ''"
+               aria-label="Première page">
+                <i class="fas fa-angle-double-left"></i>
+            </a>
+            <a th:href="@{/user/plants(page=${currentPage - 1}, size=${size}, search=${search})}"
+               th:classappend="${currentPage == 0} ? 'disabled' : ''"
+               aria-label="Page précédente">
+                <i class="fas fa-angle-left"></i>
+            </a>
+
+            <span th:each="i : ${#numbers.sequence(0, totalPages - 1)}">
+                <a th:href="@{/user/plants(page=${i}, size=${size}, search=${search})}"
+                   th:text="${i + 1}"
+                   th:classappend="${currentPage == i} ? 'active' : ''"
+                   th:aria-current="${currentPage == i} ? 'page' : false">
+                </a>
+            </span>
+
+            <a th:href="@{/user/plants(page=${currentPage + 1}, size=${size}, search=${search})}"
+               th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
+               aria-label="Page suivante">
+                <i class="fas fa-angle-right"></i>
+            </a>
+            <a th:href="@{/user/plants(page=${totalPages - 1}, size=${size}, search=${search})}"
+               th:classappend="${currentPage == totalPages - 1} ? 'disabled' : ''"
+               aria-label="Dernière page">
+                <i class="fas fa-angle-double-right"></i>
+            </a>
+        </div>
+    </div>
+</div>
+</body>
+</html>

@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tableau de bord Admin | GreenPlanet</title>
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+
+    <!-- Minimal remaining style (status classes) -->
+    <style>
+        .status-pending { color: #ff9800; font-weight: 600; }
+        .status-approved { color: #4caf50; font-weight: 600; }
+        .status-rejected { color: #f44336; font-weight: 600; }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Barre latérale -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="/images/logo.webp" alt="Logo GreenPlanet" class="logo">
+            <h2>GreenPlanet</h2>
+        </div>
+
+        <nav class="nav-menu">
+            <a href="/admin/dashboard" class="active">
+                <i class="fas fa-tachometer-alt"></i> Tableau de bord
+            </a>
+            <a href="/admin/plants">
+                <i class="fas fa-leaf"></i> Gestion des plantes
+            </a>
+            <a href="/admin/reservations">
+                <i class="fas fa-calendar-check"></i> Réservations
+            </a>
+            <a href="/admin/users">
+                <i class="fas fa-users"></i> Gestion des utilisateurs
+            </a>
+            <a th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </nav>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-tachometer-alt"></i> Tableau de bord Admin</h1>
+            <div class="user-info">
+                <span th:text="${currentUser.username}"></span>
+            </div>
+        </header>
+
+        <!-- Messages de succès/erreur -->
+        <div th:if="${session.succMsg}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${session.succMsg}"></span>
+            <button class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+        </div>
+        <div th:if="${session.errorMsg}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${session.errorMsg}"></span>
+            <button class="close-btn" onclick="this.parentElement.style.display='none'">&times;</button>
+        </div>
+
+        <div class="dashboard-cards">
+            <div class="card">
+                <div class="card-icon bg-primary">
+                    <i class="fas fa-leaf"></i>
+                </div>
+                <div class="card-info">
+                    <h3>Nombre total de plantes</h3>
+                    <p th:text="${totalPlants}">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon bg-success">
+                    <i class="fas fa-users"></i>
+                </div>
+                <div class="card-info">
+                    <h3>Nombre total d'utilisateurs</h3>
+                    <p th:text="${totalUsers}">0</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-icon bg-warning">
+                    <i class="fas fa-calendar-check"></i>
+                </div>
+                <div class="card-info">
+                    <h3>Réservations en attente</h3>
+                    <p th:text="${pendingReservations}">0</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Actions rapides -->
+        <div class="quick-actions">
+            <h2><i class="fas fa-bolt"></i> Actions rapides</h2>
+            <div class="action-buttons">
+                <a href="/admin/plants/add" class="btn btn-primary">
+                    <i class="fas fa-plus"></i> Ajouter une plante
+                </a>
+                <a href="/admin/reservations" class="btn btn-secondary">
+                    <i class="fas fa-calendar-check"></i> Gérer les réservations
+                </a>
+            </div>
+        </div>
+
+        <!-- Tableau des réservations récentes -->
+        <div class="recent-section">
+            <h2><i class="fas fa-clock"></i> Réservations récentes</h2>
+            <div class="table-responsive">
+                <table id="reservationsTable" class="display">
+                    <thead>
+                    <tr>
+                        <th>Utilisateur</th>
+                        <th>Téléphone</th>
+                        <th>Description de la plante</th>
+                        <th>Quantité</th>
+                        <th>Date</th>
+                        <th>Statut</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="reservation : ${recentReservations}">
+                        <td>
+                            <span th:text="${reservation.user.username}"></span>
+                            <div class="text-muted small" th:text="${reservation.user.email}"></div>
+                        </td>
+                        <td th:text="${reservation.phoneNumber}"></td>
+                        <td th:text="${reservation.plantDescription}"></td>
+                        <td th:text="${reservation.quantity}"></td>
+                        <td th:text="${#temporals.format(reservation.reservationDate, 'dd/MM/yyyy')}"></td>
+                        <td>
+                            <span th:classappend="${reservation.status == 'PENDING'} ? 'status-pending' :
+                                           (${reservation.status == 'APPROVED'} ? 'status-approved' : 'status-rejected')"
+                                  th:text="${reservation.status}"></span>
+                        </td>
+                        <td>
+                            <div class="action-buttons">
+                                <a th:if="${reservation.status == 'PENDING'}"
+                                   th:href="@{'/admin/reservations/approve/' + ${reservation.id}}"
+                                   class="btn btn-sm btn-success">
+                                    <i class="fas fa-check"></i> Approuver
+                                </a>
+                                <a th:if="${reservation.status == 'PENDING'}"
+                                   th:href="@{'/admin/reservations/reject/' + ${reservation.id}}"
+                                   class="btn btn-sm btn-danger">
+                                    <i class="fas fa-times"></i> Rejeter
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Tableau des plantes récemment ajoutées -->
+        <div class="recent-section">
+            <h2><i class="fas fa-leaf"></i> Plantes ajoutées récemment</h2>
+            <div class="table-responsive">
+                <table id="plantsTable" class="display">
+                    <thead>
+                    <tr>
+                        <th>Image</th>
+                        <th>Nom</th>
+                        <th>Catégorie</th>
+                        <th>Description</th>
+                        <th>Prix</th>
+                        <th>Ajoutée le</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="plant : ${recentPlantsList}">
+                        <td>
+                            <img th:src="@{'/img/plant_img/' + ${plant.image_filename}}"
+                                 alt="Image de la plante" class="plant-thumbnail">
+                        </td>
+                        <td th:text="${plant.name}"></td>
+                        <td th:text="${plant.category}"></td>
+                        <td th:text="${#strings.abbreviate(plant.description, 50)}"></td>
+                        <td th:text="${plant.price}"></td>
+                        <td th:text="${#temporals.format(plant.created_at, 'dd/MM/yyyy')}"></td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Scripts -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://cdn.datatables.net/1.11.5/js/jquery.dataTables.min.js"></script>
+</body>
+</html>

@@ -11,9 +11,7 @@ import java.nio.file.StandardCopyOption;
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Random;
 import java.util.UUID;
-import java.util.stream.Collector;
 
 import com.pfe.hypermax.model.*;
 import com.pfe.hypermax.service.*;
@@ -253,55 +251,5 @@ public class HomeController {
 		m.addAttribute("categories", categories);
 		return "product";
 
-	}
-
-	@GetMapping("/search-engine/")
-	public String showSearchForm(Model model) throws IOException {
-		model.addAttribute("searchRequest", new SearchRequest());
-		model.addAttribute("savedResults", mcpService.getSavedResults());
-		return "search";
-	}
-
-	@PostMapping("/search-engine/perform")
-	public String search(
-			@Valid @ModelAttribute("searchRequest") SearchRequest searchRequest,
-			BindingResult bindingResult,
-			Model model) throws IOException {
-
-		if (bindingResult.hasErrors()) {
-			model.addAttribute("savedResults", mcpService.getSavedResults());
-			return "search";
-		}
-
-		List<SearchResult> results = mcpService.searchAndStore(searchRequest.getQuery());
-
-		List<OnlineProduct> productsToSave = new ArrayList<>();
-
-		for (SearchResult result : results) {
-			if (!onlineProductService.existsByUrl(result.getUrl())) {  // 🛡️ Check before saving
-				OnlineProduct onlineProduct = new OnlineProduct();
-				onlineProduct.setTitle(result.getTitle());
-				onlineProduct.setUrl(result.getUrl());
-				onlineProduct.setDescription(result.getDescription());
-				onlineProduct.setImageUrl(result.getImage());
-				onlineProduct.setSource(result.getSource());
-
-				try {
-					String cleanPrice = result.getPrice().replaceAll("[^0-9.]", "");
-					onlineProduct.setPrice(new BigDecimal(cleanPrice));
-				} catch (Exception e) {
-					onlineProduct.setPrice(BigDecimal.ZERO);
-				}
-
-				productsToSave.add(onlineProduct);
-			}
-			// else: duplicate URL, skip
-		}
-
-		onlineProductService.saveProducts(productsToSave);
-
-		model.addAttribute("results", results);
-		model.addAttribute("savedResults", mcpService.getSavedResults());
-		return "search";
 	}
 }

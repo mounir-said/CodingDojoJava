@@ -3,11 +3,21 @@ package com.pfe.hypermax.controller;
 import java.security.Principal;
 import java.util.List;
 
+import com.pfe.hypermax.dto.BlogPostDto;
+import com.pfe.hypermax.model.*;
+import com.pfe.hypermax.service.*;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.util.ObjectUtils;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -15,20 +25,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
-import com.pfe.hypermax.model.Cart;
-import com.pfe.hypermax.model.Category;
-import com.pfe.hypermax.model.OrderRequest;
-import com.pfe.hypermax.model.ProductOrder;
-import com.pfe.hypermax.model.UserDtls;
 import com.pfe.hypermax.repository.UserRepository;
-import com.pfe.hypermax.service.CartService;
-import com.pfe.hypermax.service.CategoryService;
-import com.pfe.hypermax.service.OrderService;
-import com.pfe.hypermax.service.UserService;
 import com.pfe.hypermax.util.CommonUtil;
 import com.pfe.hypermax.util.OrderStatus;
 
 import jakarta.servlet.http.HttpSession;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequestMapping("/user")
@@ -49,6 +51,9 @@ public class UserController {
 
 	@Autowired
 	private PasswordEncoder passwordEncoder;
+
+	@Autowired
+	private BlogPostService blogPostService;
 
 
 	@GetMapping("/")
@@ -208,6 +213,45 @@ public class UserController {
 		}
 
 		return "redirect:/user/profile";
+	}
+
+	@GetMapping("/suggestions")
+	public String showSuggestionForm(Model model) {
+		model.addAttribute("blogPostDto", new BlogPostDto());
+		return "user/suggestion-form";
+	}
+
+
+	@PostMapping("/suggestions")
+	public String submitSuggestion(
+			@Valid @ModelAttribute BlogPostDto blogPostDto,
+			BindingResult result,
+			@AuthenticationPrincipal UserDetails userDetails,
+			RedirectAttributes redirectAttributes) {
+
+		if (result.hasErrors()) {
+			return "user/suggestion-form";
+		}
+
+
+		blogPostService.createPost(blogPostDto, userDetails.getUsername());
+		redirectAttributes.addFlashAttribute("success", "Suggestion submitted!");
+		return "redirect:/user/suggestions";
+	}
+
+	@GetMapping("/my-suggestions")
+	public String userSuggestions(
+			@AuthenticationPrincipal UserDetails userDetails,
+			@RequestParam(defaultValue = "0") int page,
+			@RequestParam(defaultValue = "10") int size,
+			Model model) {
+
+		// Service now throws exception directly if user not found
+		UserDtls user = userService.getUserByEmail(userDetails.getUsername());
+
+		Page<BlogPost> postsPage = blogPostService.getPostsByUser(user, PageRequest.of(page, size));
+		model.addAttribute("postsPage", postsPage);
+		return "user/my-suggestions";
 	}
 
 }

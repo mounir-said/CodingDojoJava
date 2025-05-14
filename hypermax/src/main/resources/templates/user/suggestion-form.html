@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Nouvelle Suggestion</title>
+</head>
+<body>
+<section>
+    <div class="container p-5 mt-3">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="card card-sh">
+                    <div class="card-header text-center">
+                        <p class="fs-4"><i class="fas fa-lightbulb me-2"></i>Nouvelle Suggestion</p>
+
+                        <th:block th:if="${session.succMsg}">
+                            <p class="text-success fw-bold">[[${session.succMsg}]]</p>
+                            <th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+
+                        <th:block th:if="${session.errorMsg}">
+                            <p class="text-danger fw-bold">[[${session.errorMsg}]]</p>
+                            <th:block th:text="${@commnServiceImpl.removeSessionMessage()}"></th:block>
+                        </th:block>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Removed CSRF token input since CSRF is disabled -->
+                        <form th:action="@{/user/suggestions}" method="post" th:object="${blogPostDto}">
+                            <div class="mb-3">
+                                <label>Titre</label>
+                                <input type="text" class="form-control"
+                                       th:field="*{title}"
+                                       placeholder="Entrez un titre descriptif">
+                                <small class="text-danger"
+                                       th:if="${#fields.hasErrors('title')}"
+                                       th:errors="*{title}"></small>
+                            </div>
+
+                            <div class="mb-3">
+                                <label>Contenu</label>
+                                <textarea class="form-control"
+                                          th:field="*{content}"
+                                          rows="5"
+                                          placeholder="Décrivez votre suggestion en détails..."></textarea>
+                                <small class="text-danger"
+                                       th:if="${#fields.hasErrors('content')}"
+                                       th:errors="*{content}"></small>
+                            </div>
+
+                            <button class="btn btn-primary col-md-12">
+                                <i class="fas fa-paper-plane me-2"></i>Soumettre
+                            </button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

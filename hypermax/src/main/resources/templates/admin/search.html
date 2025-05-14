@@ -67,7 +67,7 @@
         <h1 class="mb-4">Recherche</h1>
 
         <!-- Search Form -->
-        <form th:action="@{/search-engine/perform}" th:object="${searchRequest}" method="post">
+        <form th:action="@{/admin/search-engine/perform}" th:object="${searchRequest}" method="post">
             <div class="input-group mb-3">
                 <input type="text" class="form-control"
                        th:field="*{query}"
@@ -84,7 +84,6 @@
         <div th:if="${results != null}" class="results-container mt-4">
             <div class="action-buttons">
                 <h3>Résultats de la recherche</h3>
-                <a th:href="@{/products}" class="btn btn-outline-secondary">Retour à nos produits</a>
             </div>
 
             <div th:if="!${results.isEmpty()}" class="row mt-3">
@@ -102,8 +101,6 @@
                             </h5>
                             <p class="card-text" th:utext="${result.description}"></p>
                             <p class="price mt-auto" th:utext="${result.price != null ? result.price : 'Prix non disponible'}"></p>
-                            <p class="source" th:utext="'Source : ' + ${result.source}"></p>
-                            <small class="text-muted" th:utext="${result.url}"></small>
                         </div>
                     </div>
                 </div>
@@ -112,11 +109,6 @@
             <div th:if="${results.isEmpty()}" class="alert alert-info mt-3">
                 Aucun résultat trouvé pour votre recherche.
             </div>
-        </div>
-
-        <!-- Toujours afficher le bouton de retour même avant la recherche -->
-        <div class="text-center mt-4" th:unless="${results != null}">
-            <a th:href="@{/products}" class="btn btn-outline-primary">Retour à nos produits</a>
         </div>
     </div>
 </section>

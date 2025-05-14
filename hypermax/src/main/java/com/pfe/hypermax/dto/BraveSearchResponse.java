@@ -29,7 +29,8 @@ public class BraveSearchResponse {
         private String title;
         private String url;
         private String description;
-        private Thumbnail thumbnail; // Thumbnail is now an object
+        private Thumbnail thumbnail;
+        private String price; 
 
         public String getTitle() {
             return title;
@@ -61,6 +62,15 @@ public class BraveSearchResponse {
 
         public void setThumbnail(Thumbnail thumbnail) {
             this.thumbnail = thumbnail;
+        }
+
+        // Price getter and setter
+        public String getPrice() {
+            return price;
+        }
+
+        public void setPrice(String price) {
+            this.price = price;
         }
     }
 

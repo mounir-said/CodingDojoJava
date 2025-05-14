@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ajouter une nouvelle plante | GreenPlanet</title>
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea.form-control {
+            min-height: 120px;
+        }
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        .btn-submit:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Barre latérale -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="/images/logo.webp" alt="Logo GreenPlanet" class="logo">
+            <h2>GreenPlanet</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="/admin/dashboard">
+                <i class="fas fa-tachometer-alt"></i> Tableau de bord
+            </a>
+            <a href="/admin/plants" class="active">
+                <i class="fas fa-leaf"></i> Gestion des plantes
+            </a>
+            <a href="/admin/reservations">
+                <i class="fas fa-calendar-check"></i> Réservations
+            </a>
+            <a href="/admin/users">
+                <i class="fas fa-users"></i> Gestion des utilisateurs
+            </a>
+            <a th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </nav>
+    </div>
+
+    <!-- Contenu principal -->
+    <div class="main-content">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-plus-circle"></i> Ajouter une nouvelle plante</h1>
+            <div class="user-info">
+                <span th:text="${currentUser.username}"></span>
+            </div>
+        </header>
+
+        <!-- Messages de succès/erreur -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="form-container">
+            <form th:action="@{/admin/plants/add}" method="post" enctype="multipart/form-data" th:object="${plantDto}">
+                <!-- Nom -->
+                <div class="form-group">
+                    <label for="name">Nom de la plante</label>
+                    <input type="text" id="name" th:field="*{name}" class="form-control" required>
+                    <small class="text-danger" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></small>
+                </div>
+
+                <!-- Catégorie -->
+                <div class="form-group">
+                    <label for="category">Catégorie</label>
+                    <select id="category" th:field="*{category}" class="form-control" required>
+                        <option value="">Sélectionnez une catégorie</option>
+                        <option value="Flowers">Fleurs</option>
+                        <option value="Trees">Arbres</option>
+                        <option value="Shrubs">Arbustes</option>
+                        <option value="Vegetables">Légumes</option>
+                        <option value="Herbs">Herbes</option>
+                    </select>
+                    <small class="text-danger" th:if="${#fields.hasErrors('category')}" th:errors="*{category}"></small>
+                </div>
+
+                <!-- Description -->
+                <div class="form-group">
+                    <label for="description">Description</label>
+                    <textarea id="description" th:field="*{description}" class="form-control" required></textarea>
+                    <small class="text-danger" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></small>
+                </div>
+
+                <!-- Prix -->
+                <div class="form-group">
+                    <label for="price">Prix (€)</label>
+                    <input type="number" id="price" th:field="*{price}" class="form-control" step="0.01" min="0" required>
+                    <small class="text-danger" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></small>
+                </div>
+
+                <!-- Quantité -->
+                <div class="form-group">
+                    <label for="quantity">Quantité en stock</label>
+                    <input type="number" id="quantity" th:field="*{quantity}" class="form-control" min="0" required>
+                    <small class="text-danger" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></small>
+                </div>
+
+                <!-- Image -->
+                <div class="form-group">
+                    <label for="image">Image de la plante</label>
+                    <input type="file" id="image" name="image" class="form-control" accept="image/*" required>
+                    <small class="text-muted">Téléchargez une photo claire de la plante (JPEG ou PNG)</small>
+                </div>
+
+                <div class="form-group">
+                    <button type="submit" class="btn-submit">
+                        <i class="fas fa-save"></i> Ajouter la plante
+                    </button>
+                    <a href="/admin/dashboard" class="btn btn-secondary" style="margin-left: 10px;">
+                        <i class="fas fa-arrow-left"></i> Annuler
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

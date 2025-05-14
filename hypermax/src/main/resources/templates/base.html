@@ -1,22 +1,197 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org"
-	th:fragment="layout(content)">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" th:fragment="layout(content)">
 <head>
 	<meta charset="UTF-8">
 	<title>HyperMax - Accueil</title>
 	<link rel="icon" href="data:,">
-<link
-	href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css"
-	rel="stylesheet"
-	integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH"
-	crossorigin="anonymous">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet"
+		  integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
+		  integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
+		  crossorigin="anonymous" referrerpolicy="no-referrer" />
+	<link rel="stylesheet" href="/css/style.css">
+	<style>
+		/* Global Styles */
+		body {
+			background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+			min-height: 100vh;
+			font-family: 'Segoe UI', system-ui, sans-serif;
+			padding-top: 70px;
+		}
 
-<link rel="stylesheet"
-	href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css"
-	integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA=="
-	crossorigin="anonymous" referrerpolicy="no-referrer" />
+		/* Enhanced Dropdown Styles */
+		.dropdown-menu {
+			min-width: 280px; /* Increased minimum width */
+			border: none;
+			box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+			margin-top: 0.5rem;
+			border-radius: 8px;
+			padding: 0.5rem 0;
+		}
 
-<link rel="stylesheet" href="/css/style.css">
+		.dropdown-item {
+			padding: 0.75rem 2rem 0.75rem 1.5rem; /* Top Right Bottom Left */
+			font-size: 0.95rem;
+			display: flex;
+			align-items: center;
+			gap: 0.8rem;
+			transition: all 0.2s ease;
+			position: relative;
+			white-space: normal; /* Allow text wrapping */
+			word-break: keep-all; /* Prevent word breaking */
+		}
+
+		.dropdown-item:hover {
+			background: #f8f9fa;
+			padding-left: 1.75rem;
+			padding-right: 1.75rem; /* Maintain balance on hover */
+		}
+
+		.dropdown-item i {
+			min-width: 25px; /* Fixed width for icons */
+			text-align: center;
+		}
+
+		/* Specific adjustments for user menu */
+		.user-dropdown .dropdown-menu {
+			min-width: 300px; /* Even wider for user menu */
+		}
+
+		/* Right alignment for dropdown */
+		.dropdown-menu-end {
+			right: 0;
+			left: auto;
+		}
+
+		/* Mobile adjustments */
+		@media (max-width: 992px) {
+			.dropdown-menu {
+				min-width: 100%;
+				border-radius: 0;
+			}
+
+			.dropdown-item {
+				padding: 0.75rem 1.25rem;
+			}
+
+			.user-dropdown .dropdown-menu {
+				min-width: 100%;
+			}
+		}
+
+		/* Carousel Styles */
+		.carousel {
+			border-radius: 15px;
+			overflow: hidden;
+			box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+			margin: 2rem auto;
+			max-width: 1200px;
+		}
+
+		.carousel-item img {
+			object-fit: cover;
+			filter: brightness(0.9);
+		}
+
+		/* Card Styles */
+		.category-card,
+		.product-card {
+			transition: all 0.3s ease;
+			border: none;
+		}
+
+		.category-card:hover,
+		.product-card:hover {
+			transform: translateY(-5px);
+		}
+
+		.category-card {
+			box-shadow: 0 8px 25px rgba(0,0,0,0.12);
+		}
+
+		.product-card {
+			background: white;
+			box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+		}
+
+		/* Section Headings */
+		.fs-3,
+		.fs-4 {
+			font-weight: 700;
+			color: #2c3e50;
+			position: relative;
+			text-align: center;
+		}
+
+		.fs-3 {
+			font-size: 2.5rem;
+			text-transform: uppercase;
+			letter-spacing: 1px;
+			margin-bottom: 40px;
+		}
+
+		.fs-4 {
+			font-size: 2rem;
+			margin: 3rem 0;
+		}
+
+		.fs-3::after,
+		.fs-4::after {
+			content: '';
+			display: block;
+			height: 3px;
+			background: #3498db;
+			margin: 0.5rem auto;
+			border-radius: 2px;
+		}
+
+		.fs-3::after { width: 50px; }
+		.fs-4::after { width: 60px; }
+
+		/* Admin Dashboard Specific */
+		.card-sh {
+			border-radius: 15px;
+			transition: all 0.3s ease;
+			min-height: 180px;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			background: rgba(255, 255, 255, 0.9);
+			backdrop-filter: blur(5px);
+			box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+		}
+
+		/* Responsive Design */
+		@media (max-width: 992px) {
+			.navbar-collapse {
+				padding: 1rem 0;
+				background: rgba(255,255,255,0.05);
+				backdrop-filter: blur(10px);
+			}
+		}
+
+		@media (max-width: 768px) {
+			.carousel {
+				border-radius: 0;
+				margin: 0;
+			}
+
+			.fs-3 { font-size: 2rem; }
+			.fs-4 { font-size: 1.5rem; }
+		}
+
+		@media (max-width: 576px) {
+			.carousel img { height: 250px !important; }
+			.category-card img { height: 100px !important; }
+		}
+
+		/* Utility Classes */
+		.text-primary { color: #3498db !important; }
+		.text-success { color: #27ae60 !important; }
+		.text-warning { color: #f1c40f !important; }
+		.text-info { color: #2980b9 !important; }
+		.text-secondary { color: #7f8c8d !important; }
+	</style>
 </head>
 <body>
 	<!-- Start Navbar  -->
@@ -53,9 +228,6 @@
 					<li class="nav-item"><a class="nav-link active"
 						aria-current="page" href="/products">Produits</a></li>
 
-					<li class="nav-item"><a class="nav-link active"
-											aria-current="page" href="/search-engine/">Recherche assistée par IA</a></li>
-
 
 					<li class="nav-item dropdown"><a
 						class="nav-link dropdown-toggle" href="#" role="button"
@@ -86,7 +258,7 @@
 									class="fa-solid fa-cart-shopping"></i> Panier [ [[${countCart}]]
 									]</a></li>
 						</th:block>
-						<li class="nav-item dropdown"><a
+						<li class="nav-item dropdown" ><a
 							class="nav-link dropdown-toggle active" href="#" role="button"
 							data-bs-toggle="dropdown" aria-expanded="false"> <i
 								class="fa-solid fa-user"></i> [[${user.name}]]
@@ -100,14 +272,15 @@
 
 								<li th:if="${user.role=='ROLE_USER'}"><a
 									class="dropdown-item" href="/user/user-orders">Mes commandes</a></li>
+								<li th:if="${user.role=='ROLE_USER'}">
+									<a class="dropdown-item" href="/user/suggestions">Faire une Suggestion</a></li>
+
+								<li th:if="${user.role=='ROLE_USER'}">
+									<a class="dropdown-item" href="/user/my-suggestions">Mes Suggestions</a></li>
 								<li><a class="dropdown-item" href="/logout">Déconnexion</a></li>
 								<li><hr class="dropdown-divider"></li>
 
 							</ul></li>
-
-						<!-- <li class="nav-item"><a class="nav-link active"
-							aria-current="page" href="/logout"><i
-								class="fa-solid fa-right-to-bracket"></i> Logout</a></li> -->
 					</th:block>
 
 				</ul>

@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mes réservations | GreenPlanet</title>
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .reservations-container {
+            background: white;
+            padding: 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-top: 20px;
+        }
+        .reservation-card {
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 20px;
+            transition: transform 0.3s ease;
+        }
+        .reservation-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+        .reservation-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+        .reservation-title {
+            color: #2e7d32;
+            margin: 0;
+        }
+        .reservation-status {
+            padding: 5px 10px;
+            border-radius: 12px;
+            font-size: 14px;
+            font-weight: 600;
+        }
+        .status-pending {
+            background-color: #fff3e0;
+            color: #e65100;
+        }
+        .status-approved {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+        }
+        .status-rejected {
+            background-color: #ffebee;
+            color: #c62828;
+        }
+        .reservation-meta {
+            display: flex;
+            gap: 20px;
+            margin-top: 15px;
+        }
+        .reservation-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+            color: #666;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 40px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .empty-state p {
+            margin-bottom: 20px;
+            color: #666;
+        }
+        .success-message {
+            background-color: #e8f5e9;
+            color: #2e7d32;
+            padding: 15px;
+            border-radius: 4px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="/images/logo.webp" alt="Logo GreenPlanet" class="logo">
+            <h2>GreenPlanet</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="/user/dashboard">
+                <i class="fas fa-tachometer-alt"></i> Accueil
+            </a>
+            <a href="/user/plants">
+                <i class="fas fa-leaf"></i> Plantes disponibles
+            </a>
+            <a href="/user/reservations" class="active">
+                <i class="fas fa-calendar-check"></i> Mes réservations
+            </a>
+            <a th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-calendar-check"></i> Mes réservations</h1>
+            <div class="user-info">
+                <span th:text="${currentUser.username}"></span>
+            </div>
+        </header>
+
+        <!-- Success message -->
+        <div th:if="${param.success}" class="success-message">
+            <i class="fas fa-check-circle"></i>
+            <span>Votre réservation a été soumise avec succès !</span>
+        </div>
+
+        <!-- Reservations list -->
+        <div class="reservations-container">
+            <div th:if="${reservations.empty}">
+                <div class="empty-state">
+                    <p>Vous n'avez aucune réservation pour le moment.</p>
+                    <a href="/user/reserve" class="btn btn-primary">
+                        <i class="fas fa-calendar-plus"></i> Faire une nouvelle réservation
+                    </a>
+                </div>
+            </div>
+
+            <div th:unless="${reservations.empty}">
+                <div class="reservation-card" th:each="reservation : ${reservations}">
+                    <div class="reservation-header">
+                        <h3 class="reservation-title" th:text="${reservation.plantDescription}">Description de la plante</h3>
+                        <span th:classappend="'reservation-status ' +
+                            (${reservation.status == 'PENDING'} ? 'status-pending' :
+                            (${reservation.status == 'APPROVED'} ? 'status-approved' : 'status-rejected'))"
+                              th:text="${#strings.toUpperCase(#strings.substring(reservation.status, 0, 1)) +
+                              #strings.toLowerCase(#strings.substring(reservation.status, 1))}">
+                        </span>
+                    </div>
+                    <p th:text="'Quantité : ' + ${reservation.quantity}"></p>
+                    <div class="reservation-meta">
+                        <div class="reservation-meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span th:text="${#temporals.format(reservation.createdAt, 'dd MMMM yyyy HH:mm', new java.util.Locale('fr'))}"></span>
+                        </div>
+                        <div class="reservation-meta-item" th:if="${reservation.updatedAt != null}">
+                            <i class="fas fa-sync-alt"></i>
+                            <span th:text="'Modifié le : ' + ${#temporals.format(reservation.updatedAt, 'dd MMMM yyyy', new java.util.Locale('fr'))}"></span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

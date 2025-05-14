@@ -27,4 +27,7 @@ public interface OnlineProductRepository extends JpaRepository<OnlineProduct, Lo
     // Distinct sources
     @Query("SELECT DISTINCT o.source FROM OnlineProduct o")
     List<String> findDistinctSources();
+
+    // Latest products
+    List<OnlineProduct> findTop5ByOrderByTimestampDesc();
 }
