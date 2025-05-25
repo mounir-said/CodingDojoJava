@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+      th:replace="~{base::layout(~{::section})}">
+<head>
+    <meta charset="UTF-8">
+    <title>Gestion des Suggestions</title>
+</head>
+<body>
+<section>
+    <div class="container p-5 mt-3">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="card card-sh">
+                    <div class="card-header text-center bg-info text-white">
+                        <h4><i class="fas fa-comments me-2"></i>Gestion des Suggestions</h4>
+                    </div>
+
+                    <div class="card-body">
+                        <!-- Status Filter -->
+                        <div class="mb-4">
+                            <a th:href="@{/admin/suggestions}" class="btn btn-outline-info me-2">Toutes</a>
+                            <a th:href="@{/admin/suggestions(status='PENDING')}" class="btn btn-outline-warning me-2">En Attente</a>
+                            <a th:href="@{/admin/suggestions(status='APPROVED')}" class="btn btn-outline-success me-2">Approuvées</a>
+                            <a th:href="@{/admin/suggestions(status='REJECTED')}" class="btn btn-outline-danger">Rejetées</a>
+                        </div>
+
+                        <div th:if="${postsPage.empty}">
+                            <div class="alert alert-info text-center">
+                                <i class="fas fa-info-circle me-2"></i>
+                                Aucune suggestion trouvée
+                            </div>
+                        </div>
+
+                        <div th:each="post : ${postsPage.content}" class="mb-4">
+                            <div class="card shadow-sm">
+                                <div class="card-header d-flex justify-content-between align-items-center">
+                                    <div>
+                                        <h5 class="mb-0">[[${post.title}]]</h5>
+                                        <small class="text-muted">
+                                            Posté par [[${post.author.email}]] ([[${post.author.name}]])
+                                        </small>
+                                    </div>
+                                    <div class="d-flex align-items-center">
+                                        <span class="badge me-3"
+                                              th:classappend="${post.status eq T(com.pfe.hypermax.model.PostStatus).PENDING} ? 'bg-warning' :
+                      (${post.status eq T(com.pfe.hypermax.model.PostStatus).APPROVED} ? 'bg-success' : 'bg-danger')">
+    [[${post.status}]]
+</span>
+                                        <div class="btn-group">
+                                            <a th:href="@{/admin/suggestions/{id}/approve(id=${post.id})}"
+                                               class="btn btn-sm btn-success"
+                                               th:if="${post.status.name() != 'APPROVED'}">
+                                                <i class="fas fa-check"></i> Approuver
+                                            </a>
+                                            <a th:href="@{/admin/suggestions/{id}/reject(id=${post.id})}"
+                                               class="btn btn-sm btn-danger ms-2"
+                                               th:if="${post.status.name() != 'REJECTED'}">
+                                                <i class="fas fa-times"></i> Rejeter
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="card-body">
+                                    <div class="row">
+                                        <div class="col-md-8">
+                                            <p class="text-muted small mb-3">
+                                                <i class="fas fa-clock me-2"></i>
+                                                [[${#temporals.format(post.createdAt, 'dd MMM yyyy à HH:mm')}]]
+                                            </p>
+                                            <p class="mb-0">[[${post.content}]]</p>
+                                        </div>
+                                        <div class="col-md-4 border-start">
+                                            <h6 class="text-muted">Informations de l'utilisateur:</h6>
+                                            <ul class="list-unstyled small">
+                                                <li><i class="fas fa-user me-2"></i>[[${post.author.name}]]</li>
+                                                <li><i class="fas fa-phone me-2"></i>[[${post.author.mobileNumber}]]</li>
+                                                <li><i class="fas fa-map-marker-alt me-2"></i>[[${post.author.city}]]</li>
+                                            </ul>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Pagination -->
+                        <nav th:if="${postsPage.totalPages > 1}" class="mt-4">
+                            <ul class="pagination justify-content-center">
+                                <li class="page-item" th:classappend="${postsPage.first} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/suggestions(page=0, size=${postsPage.size})}">
+                                        <i class="fas fa-angle-double-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${postsPage.number == 0} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/suggestions(page=${postsPage.number-1}, size=${postsPage.size})}">
+                                        <i class="fas fa-angle-left"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:each="i : ${#numbers.sequence(1, postsPage.totalPages)}"
+                                    th:classappend="${postsPage.number + 1 == i} ? 'active'">
+                                    <a class="page-link" th:href="@{/admin/suggestions(page=${i-1}, size=${postsPage.size})}">
+                                        [[${i}]]
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${postsPage.last} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/suggestions(page=${postsPage.number+1}, size=${postsPage.size})}">
+                                        <i class="fas fa-angle-right"></i>
+                                    </a>
+                                </li>
+                                <li class="page-item" th:classappend="${postsPage.last} ? 'disabled'">
+                                    <a class="page-link" th:href="@{/admin/suggestions(page=${postsPage.totalPages-1}, size=${postsPage.size})}">
+                                        <i class="fas fa-angle-double-right"></i>
+                                    </a>
+                                </li>
+                            </ul>
+                        </nav>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+</body>
+</html>

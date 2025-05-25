@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="fr" xmlns:th="http://www.thymeleaf.org"
+	  th:replace="~{base::layout(~{::section})}">
+<head>
+	<meta charset="UTF-8">
+	<title>Commande Réalisée</title>
+</head>
+<body>
+<section>
+	<div class="container mt-5 p-5">
+		<div class="row">
+			<div class="col-md-6 offset-md-3 text-center">
+				<i class="fa-solid fa-circle-check fa-5x text-success"></i>
+				<p class="fs-3">Produit Commandé avec Succès</p>
+				<p class="fs-4">Le produit sera livré dans les 7 jours</p>
+				<div class="text-center">
+					<a href="/" class="btn btn-primary">Accueil</a>
+					<a href="/user/user-orders" class="btn btn-primary">Vos Commandes</a>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+</body>
+</html>
