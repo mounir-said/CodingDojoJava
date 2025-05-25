@@ -31,9 +31,6 @@ public class UserServiceImpl implements UserService {
 	@Autowired
 	private PasswordEncoder passwordEncoder;
 
-	private static final String PROFILE_UPLOAD_DIR = "uploads/profile_img/";
-	private static final Path PROFILE_UPLOAD_PATH = Paths.get(PROFILE_UPLOAD_DIR);
-
 	@Override
 	public UserDtls saveUser(UserDtls user) {
 		user.setRole("ROLE_USER");
@@ -51,12 +48,6 @@ public class UserServiceImpl implements UserService {
 	public UserDtls getUserByEmail(String email) {
 		return userRepository.findByEmail(email);
 	}
-
-	@Override
-	public UserDtls updateUserProfile(UserDtls user) {
-		return null;
-	}
-
 
 	@Override
 	public List<UserDtls> getUsers(String role) {
@@ -135,51 +126,39 @@ public class UserServiceImpl implements UserService {
 
 	@Override
 	public UserDtls updateUserProfile(UserDtls user, MultipartFile img) {
+
 		UserDtls dbUser = userRepository.findById(user.getId()).get();
 
-		try {
-			// Create directory if not exists
-			if (!Files.exists(PROFILE_UPLOAD_PATH)) {
-				Files.createDirectories(PROFILE_UPLOAD_PATH);
-			}
+		if (!img.isEmpty()) {
+			dbUser.setProfileImage(img.getOriginalFilename());
+		}
 
-			if (!img.isEmpty()) {
-				// Sanitize filename
-				String fileName = sanitizeFileName(img.getOriginalFilename());
+		if (!ObjectUtils.isEmpty(dbUser)) {
 
-				// Delete old image if exists
-				if (dbUser.getProfileImage() != null) {
-					Path oldPath = PROFILE_UPLOAD_PATH.resolve(dbUser.getProfileImage());
-					Files.deleteIfExists(oldPath);
-				}
-
-				// Save new image
-				Path targetPath = PROFILE_UPLOAD_PATH.resolve(fileName);
-				Files.copy(img.getInputStream(), targetPath, StandardCopyOption.REPLACE_EXISTING);
-
-				// Update user entity
-				dbUser.setProfileImage(fileName);
-			}
-
-			// Update other fields
 			dbUser.setName(user.getName());
 			dbUser.setMobileNumber(user.getMobileNumber());
 			dbUser.setAddress(user.getAddress());
 			dbUser.setCity(user.getCity());
 			dbUser.setState(user.getState());
 			dbUser.setPincode(user.getPincode());
-
-			return userRepository.save(dbUser);
-
-		} catch (IOException e) {
-			throw new RuntimeException("Failed to store profile image", e);
+			dbUser = userRepository.save(dbUser);
 		}
-	}
 
-	private String sanitizeFileName(String originalName) {
-		return originalName.replaceAll("[^a-zA-Z0-9.-]", "_")
-				.replace(" ", "_")
-				.toLowerCase();
+		try {
+			if (!img.isEmpty()) {
+				File saveFile = new ClassPathResource("static/img").getFile();
+
+				Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
+						+ img.getOriginalFilename());
+
+//			System.out.println(path);
+				Files.copy(img.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+			}
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return dbUser;
 	}
 
 	@Override

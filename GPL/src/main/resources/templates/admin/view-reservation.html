@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Détails de réservation | GreenPlanet</title>
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .reservation-details {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .detail-row {
+            display: flex;
+            margin-bottom: 15px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid #eee;
+        }
+        .detail-label {
+            width: 200px;
+            font-weight: 600;
+            color: #555;
+        }
+        .detail-value {
+            flex: 1;
+        }
+        .status-badge {
+            padding: 5px 10px;
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+        .status-pending {
+            background-color: #ffc107;
+            color: #212529;
+        }
+        .status-approved {
+            background-color: #28a745;
+            color: white;
+        }
+        .status-rejected {
+            background-color: #dc3545;
+            color: white;
+        }
+        .status-completed {
+            background-color: #17a2b8;
+            color: white;
+        }
+        .action-buttons {
+            margin-top: 20px;
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .btn-primary {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-secondary {
+            background-color: #6c757d;
+            color: white;
+        }
+        .btn-danger {
+            background-color: #dc3545;
+            color: white;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="logo-section">
+            <img src="/images/logo.webp" alt="Logo GreenPlanet" class="logo">
+            <h2>GreenPlanet</h2>
+        </div>
+        <nav class="nav-menu">
+            <a href="/admin/dashboard">
+                <i class="fas fa-tachometer-alt"></i> Tableau de bord
+            </a>
+            <a href="/admin/plants">
+                <i class="fas fa-leaf"></i> Gestion des plantes
+            </a>
+            <a href="/admin/reservations" class="active">
+                <i class="fas fa-calendar-check"></i> Réservations
+            </a>
+            <a href="/admin/users">
+                <i class="fas fa-users"></i> Gestion des utilisateurs
+            </a>
+            <a th:href="@{/logout}">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </nav>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-calendar-check"></i> Détails de la réservation</h1>
+            <div class="user-info">
+                <span th:text="${currentUser.username}"></span>
+            </div>
+        </header>
+
+        <!-- Messages de succès/erreur -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="reservation-details">
+            <div class="detail-row">
+                <div class="detail-label">ID de réservation :</div>
+                <div class="detail-value" th:text="${reservation.id}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Statut :</div>
+                <div class="detail-value">
+                    <span th:classappend="'status-' + ${reservation.status.toString().toLowerCase()}"
+                          class="status-badge"
+                          th:text="${#strings.capitalize(#strings.toLowerCase(reservation.status.toString()))}"></span>
+                </div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Nom du client :</div>
+                <div class="detail-value" th:text="${reservation.fullName}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Téléphone :</div>
+                <div class="detail-value" th:text="${reservation.phoneNumber}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Adresse :</div>
+                <div class="detail-value" th:text="${reservation.address}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Description de la plante :</div>
+                <div class="detail-value" th:text="${reservation.plantDescription != null} ? ${reservation.plantDescription} : 'Plante personnalisée'"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Quantité :</div>
+                <div class="detail-value" th:text="${reservation.quantity}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Date de réservation :</div>
+                <div class="detail-value" th:text="${#temporals.format(reservation.reservationDate, 'dd MMM yyyy HH:mm', new java.util.Locale('fr'))}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Date de création :</div>
+                <div class="detail-value" th:text="${#temporals.format(reservation.createdAt, 'dd MMM yyyy HH:mm', new java.util.Locale('fr'))}"></div>
+            </div>
+
+            <div class="detail-row">
+                <div class="detail-label">Dernière mise à jour :</div>
+                <div class="detail-value" th:text="${#temporals.format(reservation.updatedAt, 'dd MMM yyyy HH:mm', new java.util.Locale('fr'))}"></div>
+            </div>
+
+            <div class="action-buttons">
+                <a th:href="@{/admin/reservations}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Retour à la liste
+                </a>
+
+                <div th:if="${reservation.status != T(com.pfe.GreenPlanet.model.ReservationStatus).COMPLETED}">
+                    <form th:action="@{'/admin/reservations/update-status/' + ${reservation.id}}" method="post" style="display: inline;">
+                        <input type="hidden" name="status" value="APPROVED">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-check"></i> Approuver
+                        </button>
+                    </form>
+
+                    <form th:action="@{'/admin/reservations/update-status/' + ${reservation.id}}" method="post" style="display: inline;">
+                        <input type="hidden" name="status" value="REJECTED">
+                        <button type="submit" class="btn btn-danger">
+                            <i class="fas fa-times"></i> Rejeter
+                        </button>
+                    </form>
+
+                    <form th:action="@{'/admin/reservations/update-status/' + ${reservation.id}}" method="post" style="display: inline;">
+                        <input type="hidden" name="status" value="COMPLETED">
+                        <button type="submit" class="btn btn-primary">
+                            <i class="fas fa-flag-checkered"></i> Compléter
+                        </button>
+                    </form>
+                </div>
+
+                <form th:action="@{'/admin/reservations/delete/' + ${reservation.id}}" method="post" style="display: inline;">
+                    <button type="submit" class="btn btn-danger"
+                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette réservation ?')">
+                        <i class="fas fa-trash"></i> Supprimer
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</body>
+</html>

@@ -13,8 +13,6 @@ public interface UserService {
 
 	public UserDtls getUserByEmail(String email);
 
-	UserDtls updateUserProfile(UserDtls user);
-
 	public List<UserDtls> getUsers(String role);
 
 	public Boolean updateAccountStatus(Integer id, Boolean status);
@@ -33,7 +31,7 @@ public interface UserService {
 
 	public UserDtls updateUser(UserDtls user);
 
-	UserDtls updateUserProfile(UserDtls user, MultipartFile img);
+	public UserDtls updateUserProfile(UserDtls user, MultipartFile img);
 
 	public UserDtls saveAdmin(UserDtls user);
 

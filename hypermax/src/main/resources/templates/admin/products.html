@@ -55,13 +55,16 @@
 					<tbody>
 					<tr th:each="p,c:${products}">
 						<th scope="row">[[${c.count}]]</th>
-						<td><td><img th:src="@{'/uploads/product_img/' + ${p.image}}" width="70px" height="70px"></td>
+						<td><img th:src="@{'/uploads/product_img/' + ${p.image}}" width="70px" height="70px"></td>
 						<td>[[${p.title}]]</td>
 						<td>[[${p.category}]]</td>
 						<td>[[${p.price}]]</td>
 						<td>[[${p.discount}]]</td>
 						<td>[[${p.discountPrice}]]</td>
-						<td>[[${p.isActive}]]</td>
+						<td>
+							<span th:if="${p.isActive}" class="badge bg-success">Activé</span>
+							<span th:unless="${p.isActive}" class="badge bg-danger">Désactivé</span>
+						</td>
 						<td>[[${p.stock}]]</td>
 						<td>
 							<a th:href="@{'/admin/editProduct/'+${p.id}}" class="btn btn-sm btn-primary">

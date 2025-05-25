@@ -60,29 +60,46 @@ public class ProductServiceImpl implements ProductService {
 	}
 
 	@Override
-	public Product updateProduct(Product product, MultipartFile file) {
-		return null;
-	}
+	public Product updateProduct(Product product, MultipartFile image) {
 
-	@Override
-	public Product updateProduct(Product product) {
 		Product dbProduct = getProductById(product.getId());
 
-		// Update fields from incoming product
+		String imageName = image.isEmpty() ? dbProduct.getImage() : image.getOriginalFilename();
+
 		dbProduct.setTitle(product.getTitle());
 		dbProduct.setDescription(product.getDescription());
 		dbProduct.setCategory(product.getCategory());
 		dbProduct.setPrice(product.getPrice());
 		dbProduct.setStock(product.getStock());
-		dbProduct.setImage(product.getImage());
+		dbProduct.setImage(imageName);
 		dbProduct.setIsActive(product.getIsActive());
 		dbProduct.setDiscount(product.getDiscount());
 
-		// Calculate discount price
-		Double discountAmount = product.getPrice() * (product.getDiscount() / 100.0);
-		dbProduct.setDiscountPrice(product.getPrice() - discountAmount);
+		// 5=100*(5/100); 100-5=95
+		Double disocunt = product.getPrice() * (product.getDiscount() / 100.0);
+		Double discountPrice = product.getPrice() - disocunt;
+		dbProduct.setDiscountPrice(discountPrice);
 
-		return productRepository.save(dbProduct);
+		Product updateProduct = productRepository.save(dbProduct);
+
+		if (!ObjectUtils.isEmpty(updateProduct)) {
+
+			if (!image.isEmpty()) {
+
+				try {
+					File saveFile = new ClassPathResource("static/img").getFile();
+
+					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "product_img" + File.separator
+							+ image.getOriginalFilename());
+					Files.copy(image.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return product;
+		}
+		return null;
 	}
 
 	@Override

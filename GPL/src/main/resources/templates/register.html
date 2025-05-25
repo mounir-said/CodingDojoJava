@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GreenPlanet - Inscription</title>
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+</head>
+<body>
+<div class="auth-container">
+    <div class="auth-card">
+        <div class="logo-section">
+            <img src="/images/logo.webp" alt="Logo GreenPlanet" class="logo">
+            <h1>GreenPlanet</h1>
+        </div>
+
+        <!-- Message de succès -->
+        <div th:if="${message != null}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            [[${message}]]
+        </div>
+
+        <form th:action="@{/register}" method="post" class="auth-form" th:object="${userDto}">
+            <div class="form-group">
+                <label for="username"><i class="fas fa-user"></i> Nom d'utilisateur</label>
+                <input th:field="*{username}" type="text" id="username" name="username" required minlength="3" maxlength="30">
+                <small class="error-message" th:if="${#fields.hasErrors('username')}"
+                       th:errors="*{username}">Erreur de nom d'utilisateur</small>
+            </div>
+
+            <div class="form-group">
+                <label for="email"><i class="fas fa-envelope"></i> Email</label>
+                <input th:field="*{email}" type="email" id="email" name="email" required>
+                <small class="error-message" th:if="${#fields.hasErrors('email')}"
+                       th:errors="*{email}">Erreur d'email</small>
+            </div>
+
+            <div class="form-group">
+                <label for="password"><i class="fas fa-lock"></i> Mot de passe</label>
+                <input th:field="*{password}" type="password" id="password" name="password" required minlength="8" maxlength="128">
+                <small class="error-message" th:if="${#fields.hasErrors('password')}"
+                       th:errors="*{password}">Erreur de mot de passe</small>
+            </div>
+
+            <div class="form-group">
+                <label for="confirm"><i class="fas fa-lock"></i> Confirmer le mot de passe</label>
+                <input th:field="*{confirm}" type="password" id="confirm" name="confirm" required minlength="8" maxlength="128">
+                <small class="error-message" th:if="${#fields.hasErrors('confirm')}"
+                       th:errors="*{confirm}">Erreur de confirmation</small>
+            </div>
+
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-user-plus"></i> S'inscrire
+            </button>
+        </form>
+
+        <div class="auth-footer">
+            <p>Vous avez déjà un compte ? <a th:href="@{/login}">Connectez-vous ici</a></p>
+        </div>
+    </div>
+</div>
+</body>
+</html>

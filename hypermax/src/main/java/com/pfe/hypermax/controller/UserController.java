@@ -59,18 +59,6 @@ public class UserController {
 	@Autowired
 	private BlogPostService blogPostService;
 
-	// In UserController.java
-	private static final String PROFILE_UPLOAD_DIR;
-
-	static {
-		String uploadPath = Paths.get("uploads/profile_img").toAbsolutePath().toString();
-		try {
-			Files.createDirectories(Paths.get(uploadPath));
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		PROFILE_UPLOAD_DIR = uploadPath;
-	}
 
 	@GetMapping("/")
 	public String home() {
@@ -177,7 +165,7 @@ public class UserController {
 		}
 
 		ProductOrder updateOrder = orderService.updateOrderStatus(id, status);
-		
+
 		try {
 			commonUtil.sendMailForProductOrder(updateOrder, status);
 		} catch (Exception e) {
@@ -197,61 +185,20 @@ public class UserController {
 		return "/user/profile";
 	}
 
-	private String sanitizeFileName(String originalName) {
-		return originalName.replaceAll("[^a-zA-Z0-9.-]", "_")
-				.replace(" ", "_")
-				.toLowerCase();
-	}
-
 	@PostMapping("/update-profile")
-	public String updateProfile(
-			@ModelAttribute UserDtls user,
-			@RequestParam MultipartFile img,
-			Principal principal,
-			HttpSession session) {
-		try {
-			// Get existing user
-			UserDtls existingUser = userService.getUserByEmail(principal.getName());
-
-			// Handle file upload
-			if (!img.isEmpty()) {
-				// 1. Delete old image if exists
-				if (existingUser.getProfileImage() != null &&
-						!existingUser.getProfileImage().equals("default.jpg")) {
-					Path oldPath = Paths.get(PROFILE_UPLOAD_DIR, existingUser.getProfileImage());
-					Files.deleteIfExists(oldPath);
-				}
-
-				// 2. Save new image
-				String fileName = sanitizeFileName(img.getOriginalFilename());
-				Path filePath = Paths.get(PROFILE_UPLOAD_DIR, fileName);
-				Files.copy(img.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-
-				// 3. Update database record
-				existingUser.setProfileImage(fileName);
-			}
-
-			// Update other fields
-			existingUser.setName(user.getName());
-			existingUser.setMobileNumber(user.getMobileNumber());
-			existingUser.setAddress(user.getAddress());
-			existingUser.setCity(user.getCity());
-			existingUser.setState(user.getState());
-			existingUser.setPincode(user.getPincode());
-
-			userService.updateUserProfile(existingUser);
-			session.setAttribute("succMsg", "Profile updated successfully");
-
-		} catch (Exception e) {
-			session.setAttribute("errorMsg", "Error: " + e.getMessage());
-			e.printStackTrace();
+	public String updateProfile(@ModelAttribute UserDtls user, @RequestParam MultipartFile img, HttpSession session) {
+		UserDtls updateUserProfile = userService.updateUserProfile(user, img);
+		if (ObjectUtils.isEmpty(updateUserProfile)) {
+			session.setAttribute("errorMsg", "Profile not updated");
+		} else {
+			session.setAttribute("succMsg", "Profile Updated");
 		}
 		return "redirect:/user/profile";
 	}
 
 	@PostMapping("/change-password")
 	public String changePassword(@RequestParam String newPassword, @RequestParam String currentPassword, Principal p,
-			HttpSession session) {
+								 HttpSession session) {
 		UserDtls loggedInUserDetails = getLoggedInUserDetails(p);
 
 		boolean matches = passwordEncoder.matches(currentPassword, loggedInUserDetails.getPassword());
@@ -271,6 +218,8 @@ public class UserController {
 
 		return "redirect:/user/profile";
 	}
+
+
 
 	@GetMapping("/suggestions")
 	public String showSuggestionForm(Model model) {

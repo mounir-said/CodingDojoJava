@@ -59,12 +59,6 @@ public class HomeController {
 	@Autowired
 	private CartService cartService;
 
-	@Autowired
-	private McpService mcpService;
-
-	@Autowired
-	private OnlineProductService onlineProductService;
-
 	@ModelAttribute
 	public void getUserDetails(Principal p, Model m) {
 		if (p != null) {
@@ -103,9 +97,9 @@ public class HomeController {
 
 	@GetMapping("/products")
 	public String products(Model m, @RequestParam(value = "category", defaultValue = "") String category,
-			@RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
-			@RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
-			@RequestParam(defaultValue = "") String ch) {
+						   @RequestParam(name = "pageNo", defaultValue = "0") Integer pageNo,
+						   @RequestParam(name = "pageSize", defaultValue = "12") Integer pageSize,
+						   @RequestParam(defaultValue = "") String ch) {
 
 		List<Category> categories = categoryService.getAllActiveCategory();
 		m.addAttribute("paramValue", category);
@@ -142,42 +136,35 @@ public class HomeController {
 	}
 
 	@PostMapping("/saveUser")
-	public String saveUser(@ModelAttribute UserDtls user,
-						   @RequestParam("img") MultipartFile file,
-						   HttpSession session) throws IOException {
+	public String saveUser(@ModelAttribute UserDtls user, @RequestParam("img") MultipartFile file, HttpSession session)
+			throws IOException {
 
-		// Sanitize filename
-		String filename = sanitizeFileName(file.getOriginalFilename());
+		Boolean existsEmail = userService.existsEmail(user.getEmail());
 
-		// Set profile image name
-		user.setProfileImage(filename.isEmpty() ? "default.jpg" : filename);
-
-		// Save user
-		UserDtls savedUser = userService.saveUser(user);
-
-		if (savedUser != null) {
-			if (!file.isEmpty()) {
-				// Define upload path
-				Path uploadPath = Paths.get("uploads", "profile_img");
-				Files.createDirectories(uploadPath); // Create directories if missing
-
-				// Save file
-				Path filePath = uploadPath.resolve(filename);
-				Files.copy(file.getInputStream(), filePath, StandardCopyOption.REPLACE_EXISTING);
-			}
-			session.setAttribute("succMsg", "Registration successful!");
+		if (existsEmail) {
+			session.setAttribute("errorMsg", "Email already exist");
 		} else {
-			session.setAttribute("errorMsg", "Server error");
+			String imageName = file.isEmpty() ? "default.jpg" : file.getOriginalFilename();
+			user.setProfileImage(imageName);
+			UserDtls saveUser = userService.saveUser(user);
+
+			if (!ObjectUtils.isEmpty(saveUser)) {
+				if (!file.isEmpty()) {
+					File saveFile = new ClassPathResource("static/img").getFile();
+
+					Path path = Paths.get(saveFile.getAbsolutePath() + File.separator + "profile_img" + File.separator
+							+ file.getOriginalFilename());
+
+//					System.out.println(path);
+					Files.copy(file.getInputStream(), path, StandardCopyOption.REPLACE_EXISTING);
+				}
+				session.setAttribute("succMsg", "Register successfully");
+			} else {
+				session.setAttribute("errorMsg", "something wrong on server");
+			}
 		}
 
 		return "redirect:/register";
-	}
-
-	// Filename sanitization
-	private String sanitizeFileName(String originalName) {
-		return originalName.replaceAll("[^a-zA-Z0-9.-]", "_")
-				.replace(" ", "_")
-				.toLowerCase();
 	}
 
 //	Forgot Password Code
@@ -232,7 +219,7 @@ public class HomeController {
 
 	@PostMapping("/reset-password")
 	public String resetPassword(@RequestParam String token, @RequestParam String password, HttpSession session,
-			Model m) {
+								Model m) {
 
 		UserDtls userByToken = userService.getUserByToken(token);
 		if (userByToken == null) {
@@ -259,4 +246,5 @@ public class HomeController {
 		return "product";
 
 	}
+
 }

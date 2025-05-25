@@ -9,8 +9,6 @@ import com.pfe.hypermax.model.Product;
 
 public interface ProductService {
 
-	Product updateProduct(Product product);
-
 	public Product saveProduct(Product product);
 
 	public List<Product> getAllProducts();

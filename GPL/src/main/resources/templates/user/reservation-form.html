@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Faire une réservation | GreenPlanet</title>
+    <link rel="stylesheet" href="/css/authStyle.css">
+    <link rel="stylesheet" href="/css/dashboard.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        .reservation-form-container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 20px;
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 20px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 600;
+        }
+        .form-control {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        textarea.form-control {
+            min-height: 100px;
+        }
+        .btn-submit {
+            background-color: #4CAF50;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+    </style>
+</head>
+<body>
+<div class="dashboard-container">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <!-- Votre contenu de sidebar existant -->
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <header class="dashboard-header">
+            <h1><i class="fas fa-calendar-plus"></i> Faire une réservation</h1>
+            <div class="user-info">
+                <span th:text="${currentUser.username}"></span>
+            </div>
+        </header>
+
+        <!-- Messages de succès/erreur -->
+        <div th:if="${successMessage}" class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span th:text="${successMessage}"></span>
+        </div>
+        <div th:if="${errorMessage}" class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span th:text="${errorMessage}"></span>
+        </div>
+
+        <div class="reservation-form-container">
+            <form th:action="@{/user/reserve}" th:object="${reservationDto}" method="post">
+                <!-- Description de la plante -->
+                <div class="form-group">
+                    <label for="plantDescription">Description de la plante :</label>
+                    <input type="text" id="plantDescription" th:field="*{plantDescription}" class="form-control">
+                    <span th:if="${#fields.hasErrors('plantDescription')}" th:errors="*{plantDescription}" class="text-danger"></span>
+                </div>
+
+                <!-- Quantité -->
+                <div class="form-group">
+                    <label for="quantity">Quantité :</label>
+                    <input type="number" id="quantity" th:field="*{quantity}" class="form-control" min="1">
+                    <span th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}" class="text-danger"></span>
+                </div>
+
+                <!-- Nom complet -->
+                <div class="form-group">
+                    <label for="fullName">Nom complet :</label>
+                    <input type="text" id="fullName" th:field="*{fullName}" class="form-control"
+                           th:value="${currentUser.username}">
+                    <span th:if="${#fields.hasErrors('fullName')}" th:errors="*{fullName}" class="text-danger"></span>
+                </div>
+
+                <!-- Adresse -->
+                <div class="form-group">
+                    <label for="address">Adresse :</label>
+                    <textarea id="address" th:field="*{address}" class="form-control"></textarea>
+                    <span th:if="${#fields.hasErrors('address')}" th:errors="*{address}" class="text-danger"></span>
+                </div>
+
+                <!-- Numéro de téléphone -->
+                <div class="form-group">
+                    <label for="phoneNumber">Numéro de téléphone :</label>
+                    <input type="text" id="phoneNumber" th:field="*{phoneNumber}" class="form-control">
+                    <span th:if="${#fields.hasErrors('phoneNumber')}" th:errors="*{phoneNumber}" class="text-danger"></span>
+                </div>
+
+                <button type="submit" class="btn-submit">
+                    <i class="fas fa-calendar-check"></i> Soumettre la réservation
+                </button>
+            </form>
+        </div>
+    </div>
+</div>
+</body>
+</html>
